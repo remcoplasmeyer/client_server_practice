@@ -1,27 +1,43 @@
 /*
  * Particle.h
  *
- *  Created on: Oct 14, 2012
+ *  Created on: Oct 16, 2012
  *      Author: Remco
  */
 
 #ifndef PARTICLE_H_
 #define PARTICLE_H_
+#include "Drawable.h"
+
+/*class of one 'particle' or a bitmap of one particle
+ * too lazy for getters/setters right now
+ * NOTE: this class does not contain the 'randomness' of a particle.
+ * Once a particle has been generated, it lives on it's own. The Draw() method can also be seen as a 'Update' method
+ * in this case.
+ *
+ * TODO:
+ * color changing
+ * moving in a traject rather than linear
+ * change of speed by easing
+ */
 
 class GUI;
+class Effect;
 
-//Particle class, contains different types of animations, particle-like
-//NOTE: Particles are only client sided, they may contain a server-sided hitbox though
+enum particleType { LIGHTPARTICLE };		//different types of animations/particles
 
-enum particleType { SINGLE, SPLATTER };		//different types of animations/particles
-
-class Particle {
+class Particle : public Drawable {
 public:
-	int x, y, type;						//base location and type
+	int type;	//location, velocity, type(effectType) and angle of the particle
+	float x, y;
+	double angle, vel;
+	Effect *effect;
 
 	Particle();
-	Particle(int x, int y, int type, GUI *gui);
+	Particle(int x, int y, int vel, int angle, int type, Effect *effect);
 	~Particle();
+
+	void Draw();
 };
 
 #endif /* PARTICLE_H_ */

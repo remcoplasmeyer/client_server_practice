@@ -26,4 +26,7 @@ public:
 	void connectServer(sf::IpAddress);
 };
 
+//bunch of functions that we use multiple times
+int generate_random_number(int min, int max);
+
 #endif /* CLIENT_H_ */

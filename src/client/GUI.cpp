@@ -14,12 +14,14 @@
 #include <vector>
 #include <string>
 #include <GL/glu.h>
-#include "Particle.h"
+#include "Effect.h"
+
+#include <boost/foreach.hpp>
 
 //preload all textures to video card, so we can use them with glBindTextures
 void GUI::loadTextures() {
 	//list of textures, hardcoded for now
-	std::string textureFiles[] = { "images/effects/particle_splatter.bmp" };
+	std::string textureFiles[] = { "images/effects/particle_splatter.png" };
 	for(unsigned int i = 0; i < (sizeof(textureFiles) / sizeof(textureFiles[0])); ++i) {
 		sf::Image texture;
 		if(texture.loadFromFile(textureFiles[i])) {
@@ -43,21 +45,18 @@ GUI::GUI(Client * client) {
 	this->loadTextures();
 	//get window settings
 
-	std::cout << client->settings.windowHeight << std::endl;
-
-	sf::RenderWindow window(
-			sf::VideoMode(client->settings.windowWidth,
-					client->settings.windowHeight), "Client");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "Client", sf::Style::Default, sf::ContextSettings(32));
 	window.setFramerateLimit(60);
 
 	// Set color and depth clear value
 	glClearDepth(1.f);
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 
+	glViewport(0, 0, window.getSize().x, window.getSize().y);
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_TRUE);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);	// Really Nice Perspective Calculations
 	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);				// Really Nice Point Smoothing
@@ -82,19 +81,39 @@ GUI::GUI(Client * client) {
 		//we fetch all other inputs here
 		//get mouse coordinates first
 		sf::Vector2i mouseVector = sf::Mouse::getPosition(window);
-		int mouseX = mouseVector.x;
-		int mouseY = mouseVector.y;
+		int mouseX = mouseVector.x - (window.getSize().x / 2);
+		int mouseY = mouseVector.y - (window.getSize().y / 2);
 		//left click
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			// Clear color and depth buffer
-			Particle particle(50, 50, SINGLE, this);
+			Effect effect(mouseX, mouseY*-1, SPLATTER, this);		//opengl and sfml have inverted y-coordinates compared
 		}
+
+		drawAllObjects();
 
 		//activate window, for rendering
 		window.setActive();
 		//display 'new' window
+		window.pushGLStates();
+		window.popGLStates();
 		window.display();
 	}
+}
+
+//draw all objects in toDraw and copies toDrawNext to toDraw
+void GUI::drawAllObjects() {
+	toDrawNext.clear();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	BOOST_FOREACH(Drawable *drawableObject, toDraw) {
+		drawableObject->life = drawableObject->life - 1;
+		int life = drawableObject->life;
+		if(life == 0) {
+			delete drawableObject;
+		} else {
+			drawableObject->Draw();
+		}
+	}
+	toDraw.assign(toDrawNext.begin(), toDrawNext.end());
 }
 
 GUI::~GUI() {
