@@ -8,6 +8,7 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 #include <string>
+#include <SFML/System.hpp>
 
 /*contains all the settings of client, hardcoded for now
  * also contains default settings for when settings can not be loaded or do not exist
@@ -17,6 +18,7 @@ class Settings {
 public:
 	unsigned int windowHeight;
 	unsigned int windowWidth;
+	sf::Uint16 prot;										//protocol id, client version or something like that
 	std::string username;
 
 	Settings();

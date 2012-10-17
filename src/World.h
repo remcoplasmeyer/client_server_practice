@@ -10,6 +10,7 @@
 
 class World {
 public:
+
 	World();
 	virtual ~World();
 };

@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
 #include <iostream>
+#include "../Packet.h"
 
 Server::Server() {
 	this->serverIP = sf::IpAddress::getPublicAddress();
@@ -16,6 +17,7 @@ Server::Server() {
 	//server loop
 	float frametime;
 	sf::Clock clock;
+	this->sequence = 0;
 	while(true) {
 		//this is the amount of frames elapsed since the last loop
 		frametime = clock.getElapsedTime().asSeconds();
@@ -24,19 +26,33 @@ Server::Server() {
 		sf::IpAddress receivingAddress;
 		unsigned short int receivingPort;
 		if(serverSocket.receive(receivingPacket, receivingAddress, receivingPort) == sf::Socket::Done) {
-			sf::Int8 type;
-			std::string data;
-			receivingPacket >> type >> data;
+			int type;
+			receivingPacket >> type;
+			basePacketStruct basePacket;
+			receivingPacket >> basePacket;
 			switch(type) {
-			case 1:
-				std::cout << "NEW USER: " << data << std::endl;
-				//connect packet
+			case CONNECTPACKET:
+			{															//added curly brackets for scope problems
+				connectPacketStruct connectPacket;
+				receivingPacket >> connectPacket;
+				std::cout << "NEW USER: " << connectPacket.name << std::endl;
+			}
 				break;
-			case 2:
-				//chatpacket
+			case CHATPACKET:
+			{
+				chatPacketStruct chatPacket;
+				receivingPacket >> chatPacket;
+				std::cout << "NEW MSG: " << chatPacket.message << std::endl;
+			}
+				break;
+			case MOVEPACKET:
+				//update world with movement
 				break;
 			}
 		}
+		//updateworld here
+
+		//send packets here
 
 	}
 

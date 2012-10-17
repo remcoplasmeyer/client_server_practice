@@ -3,6 +3,7 @@
 #include <iostream>
 #include "GUI.h"
 #include "Client.h"
+#include "../Packet.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
 
@@ -13,7 +14,6 @@ int main() {
 
 Client::Client() {
 	Settings settings();								//load settings
-	GUI gui(this);
 
 	//standard values
 	serverPort = 1234;
@@ -22,6 +22,9 @@ Client::Client() {
 	sf::IpAddress serverIP("94.208.18.229");			//hardcoded for now
 
 	this->connectServer(serverIP);
+
+	//init gui, contains loop
+	GUI gui(this);
 }
 
 Client::~Client() {
@@ -29,9 +32,13 @@ Client::~Client() {
 }
 
 void Client::connectServer(sf::IpAddress serverIP) {
-	sf::Packet sendingPacket;
-	sf::Int8 type = 1;//send type=1 so the server knows a new user is connecting
-	sendingPacket << type << this->settings.username;
+	//go to loading screen here
+	sf::Uint16 ack(1);
+	sf::Uint32 ackbitfield(1);
+	basePacketStruct basePacket		  = { this->settings.prot, this->sequence, ack, ackbitfield };
+	connectPacketStruct connectHolder = { this->settings.username };
+	Packet connectPacket(connectHolder, basePacket);
+	sf::Packet sendingPacket = connectPacket.getSendingPacket();
 	clientSocket.send(sendingPacket, serverIP, serverPort);
 }
 

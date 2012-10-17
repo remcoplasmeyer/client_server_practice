@@ -20,6 +20,8 @@ public:
 	World world;
 	Settings settings;
 
+	sf::Uint32 sequence;				//current sequence nr
+
 	Client();
 	virtual ~Client();
 
