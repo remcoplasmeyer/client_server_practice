@@ -7,11 +7,15 @@
 
 #ifndef WORLD_H_
 #define WORLD_H_
+#include "Map.h"
 
 class World {
 public:
+	Map *currentMap;
 
 	World();
+	void Reset();
+	void setMap(Map *map);
 	virtual ~World();
 };
 

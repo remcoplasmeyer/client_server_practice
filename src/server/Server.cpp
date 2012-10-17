@@ -3,7 +3,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
 #include <iostream>
+#include "../Map.h"
 #include "../Packet.h"
+#include "../World.h"
 
 Server::Server() {
 	this->serverIP = sf::IpAddress::getPublicAddress();
@@ -18,6 +20,12 @@ Server::Server() {
 	float frametime;
 	sf::Clock clock;
 	this->sequence = 0;
+
+	//MANUALLY MAKE WORLD FOR NOW
+	Map map("test");
+	World world;
+	world.setMap(&map);
+
 	while(true) {
 		//this is the amount of frames elapsed since the last loop
 		frametime = clock.getElapsedTime().asSeconds();
