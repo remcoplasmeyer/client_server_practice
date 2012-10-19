@@ -11,6 +11,7 @@
 #include "../World.h"
 #include "Settings.h"
 #include "GUI.h"
+#include "../Packet.h"
 
 class Client {
 public:
@@ -26,6 +27,7 @@ public:
 	virtual ~Client();
 
 	void connectServer(sf::IpAddress);
+	Packet receivePacket();
 };
 
 //bunch of functions that we use multiple times

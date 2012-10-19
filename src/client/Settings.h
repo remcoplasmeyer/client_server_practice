@@ -16,8 +16,10 @@
 
 class Settings {
 public:
+	unsigned int clientPort;
 	unsigned int windowHeight;
 	unsigned int windowWidth;
+	unsigned int reconnectTimeOut;
 	sf::Uint16 prot;										//protocol id, client version or something like that
 	std::string username;
 

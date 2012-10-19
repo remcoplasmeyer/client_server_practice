@@ -9,6 +9,7 @@
 #define PACKET_H_
 #include <SFML/Network.hpp>
 #include <string>
+#include "World.h"
 
 /*PACKET PROTOCOL
  * int type					//one variable
@@ -19,10 +20,6 @@
  * struct data				//depending on type
  */
 
-enum packetType {
-	CONNECTPACKET, CHATPACKET, MOVEPACKET, STATEPACKET //different types of effects
-};
-
 //EVERY PACKET MUST HAVE THIS
 struct basePacketStruct {
 	sf::Uint16 prot;//protocol id, ignore all packets with the wrong protocol
@@ -31,26 +28,48 @@ struct basePacketStruct {
 	sf::Uint32 ackbitfield;				//32 bits to ack in bitfield
 };
 
-sf::Packet& operator >>(sf::Packet& packet, basePacketStruct& m);
-sf::Packet& operator <<(sf::Packet& packet, const basePacketStruct& m);
+
 struct connectPacketStruct {
 	std::string name;
 };
-sf::Packet& operator >>(sf::Packet& packet, connectPacketStruct& m);
-sf::Packet& operator <<(sf::Packet& packet, const connectPacketStruct& m);
 struct chatPacketStruct {
 	std::string clientIP;			//only set at receiving server
 	std::string name;				//only set at receiving client
 	std::string message;
 };
-sf::Packet& operator >>(sf::Packet& packet, chatPacketStruct& m);
-sf::Packet& operator <<(sf::Packet& packet, const chatPacketStruct& m);
+
+struct statePacketStruct {
+	std::string name;				//only set at receiving client
+};
+
+//when a new player connects, we have to send him all the data of the current world (or actually the map)
+//which is currently just the map name for the client to load
+struct newPlayerInitStruct {
+	std::string mapName;
+};
+
 struct movePacketStruct {
 	std::string name;				//only set at receiving client
 };
 
-struct statePacketStruct {
-	std::string name;				//only set at receiving client
+struct serverMessageStruct {
+	std::string message;
+};
+
+//all the packet overloaders
+sf::Packet& operator >>(sf::Packet& packet, basePacketStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const basePacketStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, connectPacketStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const connectPacketStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, chatPacketStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const chatPacketStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, newPlayerInitStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const newPlayerInitStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, serverMessageStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const serverMessageStruct& m);
+
+enum packetType {
+	CONNECTPACKET, NEWPLAYERINITPACKET, CHATPACKET, MOVEPACKET, STATEPACKET, SERVERMESSAGEPACKET //different types of effects
 };
 
 class Packet {
@@ -62,17 +81,24 @@ public:
 	chatPacketStruct chatPacket;
 	movePacketStruct movePacket;
 	statePacketStruct statePacket;
+	serverMessageStruct serverMessage;
+	newPlayerInitStruct newPlayer;
 
+	sf::Packet sendingPacket;
 	sf::IpAddress clientIP;										//always IP of the client, never the server
 
 	Packet();
 	Packet(connectPacketStruct connectPacket, basePacketStruct basePacket);
 	Packet(chatPacketStruct chatPacket, basePacketStruct basePacket);
+	Packet(serverMessageStruct packet, basePacketStruct basePacket);
+	Packet(newPlayerInitStruct packet, basePacketStruct basePacket);
 //	Packet(struct movePacketStruct);
 //	Packet(struct statePacketStruct);
 
 	sf::Packet getSendingPacket();
 	virtual ~Packet();
+private:
+	void setSendingPacket();
 };
 
 #endif /* PACKET_H_ */

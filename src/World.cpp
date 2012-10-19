@@ -16,6 +16,6 @@ World::~World() {
 	// TODO Auto-generated destructor stub
 }
 
-void World::setMap(Map *map) {
-	this->currentMap = map;
+void World::setMap(std::string mapName) {
+	this->currentMap.loadMap(mapName);
 }

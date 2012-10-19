@@ -9,7 +9,7 @@
 #define TILE_H_
 #include <string>
 
-/* Contains all tiles and their types
+/* Contains all tiles and their types - UDPATE: tiles are now actually objects instead of tiles
  * NOTE: these are not items/players
  */
 
@@ -18,7 +18,8 @@ enum tileTypes { TILE_NOTHING, TILE_BLOCK };
 class Tile {
 public:
 	int type;
-	float width, height;				//size relative to 1 tile
+	int x, y;
+	int width, height;				//size relative to 1 tile
 	float offsetX, offsetY;				//offset from upperleft corner of tile in [0,1>, always 0 on non-moving tiles
 
 	int vel, angle;						//always 0 for non-moving tiles

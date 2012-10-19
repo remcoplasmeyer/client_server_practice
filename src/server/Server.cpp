@@ -1,11 +1,14 @@
 #include "Server.h"
+#include "../Log.h"
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
 #include <iostream>
+#include "packetSender.h"
 #include "../Map.h"
 #include "../Packet.h"
 #include "../World.h"
+
 
 Server::Server() {
 	this->serverIP = sf::IpAddress::getPublicAddress();
@@ -22,28 +25,42 @@ Server::Server() {
 	this->sequence = 0;
 
 	//MANUALLY MAKE WORLD FOR NOW
-	Map map("test");
+	//init a world and packetsender
+	packetsender.setServer(this);
 	World world;
-	world.setMap(&map);
+	world.setMap("test");
 
 	while(true) {
-		//this is the amount of frames elapsed since the last loop
-		frametime = clock.getElapsedTime().asSeconds();
+		sequence++;
+		frametime = clock.getElapsedTime().asSeconds();					//this is the amount of frames elapsed since the last loop
+
+		//TODO: WE STILL HAVE TO DO SOMETHING WITH THE ACK HERE
+		basePacketStruct serverBasePacket { this->prot, this->sequence, 1, 1 };
 
 		sf::Packet receivingPacket;
 		sf::IpAddress receivingAddress;
 		unsigned short int receivingPort;
 		if(serverSocket.receive(receivingPacket, receivingAddress, receivingPort) == sf::Socket::Done) {
+			//we get the basePacket(which every packet contains) from the packet
 			int type;
 			receivingPacket >> type;
 			basePacketStruct basePacket;
 			receivingPacket >> basePacket;
 			switch(type) {
 			case CONNECTPACKET:
-			{															//added curly brackets for scope problems
+			{	//added curly brackets for scope problems
+				/*	someone connected, so we:
+				 * 		send the connector the map data
+				 * 		add his player to the world
+				 * 		notify all other clients of a new player
+				 */
 				connectPacketStruct connectPacket;
 				receivingPacket >> connectPacket;
-				std::cout << "NEW USER: " << connectPacket.name << std::endl;
+				this->players[receivingAddress.toString()] = Player(connectPacket.name);
+				serverMessageStruct serverMessage = { "NEW PLAYER CONNECTED: " + connectPacket.name };
+				this->packetsender.addToQueue(Packet(serverMessage, serverBasePacket));
+				newPlayerInitStruct newPlayerInit { this->currentWorld.currentMap.name };
+				this->packetsender.addToQueue(Packet(newPlayerInit, serverBasePacket));
 			}
 				break;
 			case CHATPACKET:
@@ -61,6 +78,7 @@ Server::Server() {
 		//updateworld here
 
 		//send packets here
+		packetsender.sendQueueToAll();
 
 	}
 

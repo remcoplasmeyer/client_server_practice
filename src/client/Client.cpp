@@ -1,3 +1,4 @@
+#include "../Log.h"
 #include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
 #include <iostream>
@@ -19,6 +20,8 @@ Client::Client() {
 	serverPort = 1234;
 	//end standard values
 	sf::UdpSocket clientSocket;
+	clientSocket.bind(this->settings.clientPort);
+
 	sf::IpAddress serverIP("94.208.18.229");			//hardcoded for now
 
 	this->connectServer(serverIP);
@@ -31,15 +34,57 @@ Client::~Client() {
 	//nothing yet
 }
 
+Packet Client::receivePacket() {
+	Packet returnPacket;
+	sf::Packet receivingPacket;
+	sf::IpAddress receivingAddress;
+	unsigned short int receivingPort;
+	if(clientSocket.receive(receivingPacket, receivingAddress, receivingPort) == sf::Socket::Done) {
+		FILE_LOG(logDEBUG) << "received packet";
+		//we get the basePacket(which every packet contains) from the packet
+		int type;
+		receivingPacket >> type;
+		basePacketStruct basePacket;
+		receivingPacket >> basePacket;
+		switch(type) {
+		case CONNECTPACKET:
+		{
+			connectPacketStruct connectPacket;
+			receivingPacket >> connectPacket;
+			returnPacket = Packet(connectPacket, basePacket);
+		}
+			break;
+		case CHATPACKET:
+		{
+			//
+		}
+			break;
+		case MOVEPACKET:
+			//update world with movement
+			break;
+		}
+	}
+	return returnPacket;
+}
+
 void Client::connectServer(sf::IpAddress serverIP) {
-	//go to loading screen here
+	//go to loading screen or something here
 	sf::Uint16 ack(1);
 	sf::Uint32 ackbitfield(1);
 	basePacketStruct basePacket		  = { this->settings.prot, this->sequence, ack, ackbitfield };
 	connectPacketStruct connectHolder = { this->settings.username };
 	Packet connectPacket(connectHolder, basePacket);
-	sf::Packet sendingPacket = connectPacket.getSendingPacket();
-	clientSocket.send(sendingPacket, serverIP, serverPort);
+	bool connected = false;
+	clientSocket.send(connectPacket.sendingPacket, serverIP, serverPort);			//send connectpacket
+	int i = 0;
+	//TODO: MAKE THIS BETTER IN CASE OF PACKET LOSS
+	while(!connected || i >= this->settings.reconnectTimeOut) {
+		Packet receivedPacket = this->receivePacket();
+		if(receivedPacket.packetType == NEWPLAYERINITPACKET) {
+			FILE_LOG(logDEBUG) << receivedPacket.newPlayer.mapName;;
+			connected = true;
+		}
+	}
 }
 
 boost::random::mt19937 gen = boost::random::mt19937();

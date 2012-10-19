@@ -64,5 +64,4 @@ void Particle::Draw() {
 
 	glEnd();
 
-	this->effect->gui->toDrawNext.push_back(this);
 }

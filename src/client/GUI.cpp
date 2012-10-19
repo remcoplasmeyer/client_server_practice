@@ -6,6 +6,7 @@
  *      Author: Remco
  */
 
+#include "../Log.h"
 #include "GUI.h"
 #include "Client.h"
 #include <SFML/Window.hpp>
@@ -15,6 +16,7 @@
 #include <string>
 #include <GL/glu.h>
 #include "Effect.h"
+#include "Drawable.h"
 
 #include <boost/foreach.hpp>
 
@@ -102,18 +104,17 @@ GUI::GUI(Client * client) {
 
 //draw all objects in toDraw and copies toDrawNext to toDraw
 void GUI::drawAllObjects() {
-	toDrawNext.clear();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	BOOST_FOREACH(Drawable *drawableObject, toDraw) {
-		drawableObject->life = drawableObject->life - 1;
-		int life = drawableObject->life;
+	FILE_LOG(logDEBUG) << toDraw.size();
+	for(int i = 0; i < toDraw.size(); i++) {
+		toDraw[i].get()->life = toDraw[i].get()->life - 1;
+		int life = toDraw[i].get()->life;
 		if(life == 0) {
-			delete drawableObject;
+			toDraw.erase(toDraw.begin()+i);
 		} else {
-			drawableObject->Draw();
+			toDraw[i].get()->Draw();
 		}
 	}
-	toDraw.assign(toDrawNext.begin(), toDrawNext.end());
 }
 
 GUI::~GUI() {

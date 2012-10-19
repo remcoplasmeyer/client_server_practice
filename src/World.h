@@ -11,11 +11,11 @@
 
 class World {
 public:
-	Map *currentMap;
+	Map currentMap;
 
 	World();
 	void Reset();
-	void setMap(Map *map);
+	void setMap(std::string mapName);
 	virtual ~World();
 };
 

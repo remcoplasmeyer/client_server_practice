@@ -12,16 +12,27 @@
 #include <SFML/Window.hpp>
 #include <SFML/Network.hpp>
 #include <vector>
+#include <map>
+#include "packetSender.h"
+#include "../Player.h"
+#include "../World.h"
 
 class Server {
-private:
-	unsigned int sequence;			//this is the sequence number of our server, used in packets
+public:
+	typedef std::map<std::string, Player> playerMap;
+	playerMap players;								//map of players, key of the map is the ip address of the player
+
+	World currentWorld;
+	packetSender packetsender;
 
 	sf::IpAddress serverIP;
-	int serverPort;
+	short unsigned int serverPort;
 	sf::UdpSocket serverSocket;
 
-public:
+	//basePacket
+	sf::Uint16 prot;				//current protocol number
+	sf::Uint32 sequence;			//this is the sequence number of our server/packet
+
 	Server();
 	virtual ~Server();
 	sf::IpAddress getIP();

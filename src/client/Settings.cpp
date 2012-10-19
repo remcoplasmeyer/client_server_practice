@@ -14,6 +14,8 @@ Settings::Settings() {
 	windowWidth = 800;
 	windowHeight = 600;
 	sf::Uint16 prot(321);
+	reconnectTimeOut = 600;
+	clientPort = 1235;
 }
 
 Settings::~Settings() {
