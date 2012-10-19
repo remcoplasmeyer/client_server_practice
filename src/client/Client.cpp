@@ -5,6 +5,7 @@
 #include "GUI.h"
 #include "Client.h"
 #include "../Packet.h"
+#include "../Map.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
 
@@ -19,7 +20,6 @@ Client::Client() {
 	//standard values
 	serverPort = 1234;
 	//end standard values
-	sf::UdpSocket clientSocket;
 	clientSocket.bind(this->settings.clientPort);
 
 	sf::IpAddress serverIP("94.208.18.229");			//hardcoded for now
@@ -38,9 +38,10 @@ Packet Client::receivePacket() {
 	Packet returnPacket;
 	sf::Packet receivingPacket;
 	sf::IpAddress receivingAddress;
-	unsigned short int receivingPort;
+	unsigned short int receivingPort = this->settings.clientPort;
+	FILE_LOG(logDEBUG) << "trying to receive at " << this->clientSocket.getLocalPort();
 	if(clientSocket.receive(receivingPacket, receivingAddress, receivingPort) == sf::Socket::Done) {
-		FILE_LOG(logDEBUG) << "received packet";
+		FILE_LOG(logDEBUG) << "received something";
 		//we get the basePacket(which every packet contains) from the packet
 		int type;
 		receivingPacket >> type;
@@ -78,6 +79,7 @@ void Client::connectServer(sf::IpAddress serverIP) {
 	clientSocket.send(connectPacket.sendingPacket, serverIP, serverPort);			//send connectpacket
 	int i = 0;
 	//TODO: MAKE THIS BETTER IN CASE OF PACKET LOSS
+	FILE_LOG(logDEBUG) << "packet sent";
 	while(!connected || i >= this->settings.reconnectTimeOut) {
 		Packet receivedPacket = this->receivePacket();
 		if(receivedPacket.packetType == NEWPLAYERINITPACKET) {

@@ -29,8 +29,6 @@ public:
 
 private:
 	void drawAllObjects();
-
-private:
 	void loadTextures();
 };
 

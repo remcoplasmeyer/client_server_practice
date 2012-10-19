@@ -18,7 +18,7 @@ public:
 	int x, y, width, height;
 
 	Player();
-	Player(std::string name);
+	Player(std::string name, sf::IpAddress ipString);
 	~Player();
 };
 

@@ -27,6 +27,7 @@ public:
 
 	sf::IpAddress serverIP;
 	short unsigned int serverPort;
+	short unsigned int clientPort;
 	sf::UdpSocket serverSocket;
 
 	//basePacket

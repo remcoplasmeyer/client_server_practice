@@ -13,6 +13,7 @@
 Server::Server() {
 	this->serverIP = sf::IpAddress::getPublicAddress();
 	serverPort = 1234;
+	clientPort = 1235;
 	serverSocket.bind(serverPort);
 
 	//setBlocking makes the socket continue regardless of a new connection
@@ -56,7 +57,7 @@ Server::Server() {
 				 */
 				connectPacketStruct connectPacket;
 				receivingPacket >> connectPacket;
-				this->players[receivingAddress.toString()] = Player(connectPacket.name);
+				this->players[receivingAddress.toString()] = Player(connectPacket.name, receivingAddress);
 				serverMessageStruct serverMessage = { "NEW PLAYER CONNECTED: " + connectPacket.name };
 				this->packetsender.addToQueue(Packet(serverMessage, serverBasePacket));
 				newPlayerInitStruct newPlayerInit { this->currentWorld.currentMap.name };

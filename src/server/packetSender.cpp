@@ -29,7 +29,7 @@ void packetSender::sendToAll(Packet *packet) {
 		typedef std::map<std::string, Player>::iterator it_type;
 		for(it_type iterator = server->players.begin(); iterator != server->players.end(); iterator++) {
 			Player &player = iterator->second;
-			server->serverSocket.send(packet->sendingPacket, player.ip, 1235);
+			int status = server->serverSocket.send(packet->sendingPacket, player.ip, this->server->clientPort);
 		}
 	}
 }
