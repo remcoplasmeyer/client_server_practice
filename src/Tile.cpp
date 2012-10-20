@@ -12,14 +12,18 @@ Tile::Tile() {
 
 }
 
-Tile::Tile(int type, int tileImage) {
+Tile::Tile(int type, int textureType, int textureX, int textureY, int x, int y) {
 	this->type = type;
 	this->tileImage = tileImage;
+	this->textureType = textureType;
 	//we'll calculate these later and just preset them for now
 	this->offsetX = 0;
 	this->offsetY = 0;
 	this->angle = 0;
 	this->vel = 0;
+
+	this->x = x;
+	this->y = y;
 
 	this->height = 1.0f;
 	this->width = 1.0f;
@@ -33,6 +37,10 @@ Tile::Tile(int type, int tileImage) {
 			this->underGoThrough = false;
 			break;
 	}
+}
+
+void Tile::setSprite(int spriteIndex) {
+	this->spriteIndex = spriteIndex;
 }
 
 Tile::~Tile() {

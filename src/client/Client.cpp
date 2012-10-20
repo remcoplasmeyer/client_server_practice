@@ -15,17 +15,19 @@ int main() {
 }
 
 Client::Client() {
-	Settings settings();								//load settings
-
 	//standard values
+	Settings settings();								//load settings
 	serverPort = 1234;
 	//end standard values
+
 	clientSocket.bind(this->settings.clientPort);
 
+	//HARDCODED STUFF TODO: INIT THESE VIA GUI/SETTINGS/SERVER/WHATEVER
 	sf::IpAddress serverIP("94.208.18.229");			//hardcoded for now
+	world.setMap("test");
+	//END HARDCODED STUFF
 
-	this->connectServer(serverIP);
-
+//	this->connectServer(serverIP);
 	//init gui, contains loop
 	GUI gui(this);
 }

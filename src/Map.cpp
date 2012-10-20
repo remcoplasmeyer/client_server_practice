@@ -123,21 +123,12 @@ void Map::loadMap(std::string mapName) {
 		this->height = pt.get<int>("map.height");
 		for(int i = 0; i < width;i++) {
 			//create vector for every row for the 2d tile array
+			std::vector<Tile> tileVector;
+			this->tiles.push_back(tileVector);
 			for(int j=0; j < height;j++) {
-				std::vector<Tile> yTiles(1, Tile(0,0));
-				this->tiles.push_back(yTiles);
+				Tile tile(0,0,0,0,i,j);
+				this->tiles.at(i).push_back(tile);
 			}
-		}
-		//get all tiles
-		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.tiles")) {
-			assert(v.first.empty());
-
-			int y = v.second.get<int>("y");
-			int x = v.second.get<int>("x");
-			int type = v.second.get<int>("t");
-			int visual = v.second.get<int>("v");
-			std::vector<Tile> *yVec = &tiles[x];
-			yVec->assign(y, Tile(type,visual));
 		}
 		//get all textures
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.visuals")) {
@@ -149,10 +140,21 @@ void Map::loadMap(std::string mapName) {
 			Texture texture = {name, x, y};
 			this->textures.push_back(texture);
 		}
+		//get all tiles
+		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.tiles")) {
+			assert(v.first.empty());
+			int y = v.second.get<int>("y");
+			int x = v.second.get<int>("x");
+			int type = v.second.get<int>("t");
+			int visual = v.second.get<int>("v");
+			int textureX = this->textures.at(visual).x;
+			int textureY = this->textures.at(visual).y;
+			std::vector<Tile> *yVec = &tiles[x];
+			yVec->insert(yVec->begin() + y, Tile(type,visual,textureX, textureY, x, y));
+		}
 	} catch (std::exception const& e) {
 		std::cerr << e.what() << std::endl;
 	}
-
 }
 
 void Map::mapToStringstream(std::string mapName, std::stringstream &localStream) {

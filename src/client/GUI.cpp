@@ -17,6 +17,7 @@
 #include <GL/glu.h>
 #include "Effect.h"
 #include "Drawable.h"
+#include <algorithm>
 
 #include <boost/foreach.hpp>
 
@@ -43,13 +44,16 @@ void GUI::loadTextures() {
 }
 
 GUI::GUI(Client * client) {
+	state = NOGUI;
+
 	this->client = client;
 	this->loadTextures();
+	this->resetMapSprites();
 	//get window settings
 
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Client", sf::Style::Default, sf::ContextSettings(32));
+	state = GUILOADINGMAINSCREEN;
 	window.setFramerateLimit(60);
-
 	// Set color and depth clear value
 	glClearDepth(1.f);
 	glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -96,23 +100,74 @@ GUI::GUI(Client * client) {
 		//activate window, for rendering
 		window.setActive();
 		//display 'new' window
-		window.pushGLStates();
-		window.popGLStates();
+//		window.pushGLStates();
+//		window.popGLStates();
 		window.display();
 	}
 }
 
 //draw all objects in toDraw and copies toDrawNext to toDraw
 void GUI::drawAllObjects() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	FILE_LOG(logDEBUG) << toDraw.size();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			//clear window
+	//LOOP AAAALLL THE TILES!
+	int i = 0;
+	std::vector<std::vector<Tile> > tiles = this->client->world.currentMap.tiles;
+	std::vector<std::vector<Tile> >::iterator tileItr;
+	std::vector<Tile>::iterator tileYItr;
+	for(tileItr = tiles.begin(); tileItr != tiles.end(); tileItr++) {
+		for(tileYItr = tileItr->begin(); tileYItr != tileItr->end(); tileYItr++) {
+			Tile tile = *tileYItr;
+			float x = float(tile.x);
+			float y = float(tile.y);
+			this->mapSprites.at(tile.textureType).sprite.setPosition(400,400);
+			this->mapSprites.at(tile.textureType).sprite.setColor(sf::Color(255, 255, 255, 200));
+			this->window.draw(this->mapSprites.at(tile.textureType).sprite);
+		}
+	}
+
+	//THIS IS NOW DRAWING THE PARTICLES
 	for(int i = 0; i < toDraw.size(); i++) {
-		toDraw[i].get()->life = toDraw[i].get()->life - 1;
-		int life = toDraw[i].get()->life;
-		if(life == 0) {
+		if(toDraw[i].get()->life == 0) {
 			toDraw.erase(toDraw.begin()+i);
 		} else {
 			toDraw[i].get()->Draw();
+		}
+	}
+}
+
+void GUI::resetMapSprites() {
+	std::vector<Texture> textures = this->client->world.currentMap.textures;
+	std::vector<std::string> alreadyLoaded;
+	for(int i = 0; i < textures.size(); i++) {
+		int textureIndex = 0;
+		std::vector<std::string>::iterator foundString;
+		foundString = std::find(alreadyLoaded.begin(), alreadyLoaded.end(), textures.at(i).name);
+		if (foundString == alreadyLoaded.end()) {
+			sf::Texture texture;
+			FILE_LOG(logDEBUG) << "images/tiles/" + textures.at(i).name + ".png";
+			texture.loadFromFile("images/tiles/" + textures.at(i).name + ".png");
+			this->mapTextures.push_back(texture);
+			FILE_LOG(logDEBUG) << texture.getSize().x;
+			alreadyLoaded.push_back(textures.at(i).name);
+		}
+		if(textureIndex == 0) { textureIndex = alreadyLoaded.size() - 1; }
+		this->mapTexturesIndex.push_back(textureIndex);
+	}
+	//TEXTURES LOADED FROM MAP
+	//LOOP AAAALLL THE TILES!
+	int i = 0;
+	std::vector<std::vector<Tile> > tiles = this->client->world.currentMap.tiles;
+	std::vector<std::vector<Tile> >::iterator tileItr;
+	std::vector<Tile>::iterator tileYItr;
+	for(tileItr = tiles.begin(); tileItr != tiles.end(); tileItr++) {
+		for(tileYItr = tileItr->begin(); tileYItr != tileItr->end(); tileYItr++) {
+			Tile tile = *tileYItr;
+			tile.setSprite(i);
+			int textureX = tile.textureX;
+			int textureY = tile.textureY;
+			int mapTextureIndex = this->mapTexturesIndex.at(tile.textureType);
+			this->mapSprites.push_back(Sprite(this, mapTextureIndex, textureX, textureY));
+			i++;
 		}
 	}
 }

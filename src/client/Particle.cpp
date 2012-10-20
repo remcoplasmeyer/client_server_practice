@@ -64,4 +64,5 @@ void Particle::Draw() {
 
 	glEnd();
 
+	this->life--;
 }

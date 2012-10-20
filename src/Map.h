@@ -33,7 +33,7 @@ struct Texture {
 class Map {
 public:
 	std::vector<std::vector<Tile> > tiles;
-	std::vector<Texture> textures;
+	std::vector<Texture> textures;						//name of the textures, we'll copy the sf::textures to
 
 	std::string name;
 	std::string background;
