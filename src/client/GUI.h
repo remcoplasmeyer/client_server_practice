@@ -20,6 +20,7 @@ class GUI {
 public:
 	Client *client;
 	sf::RenderWindow *window;					//pointer because i'm too lazy to use initializer lists
+	sf::View view;
 
 	typedef boost::shared_ptr<Drawable> todraw_ptr;
 	std::vector<todraw_ptr> toDraw;				//objects that are going to be drawn in current iteration
@@ -43,6 +44,7 @@ private:
 	void loadTexturesIntoMap(std::vector<std::string> &textureFiles, std::map<std::string, GLuint> &texturesVector);
 	void loadSpritesIntoMap(std::vector<std::string> &textureFiles, std::map<std::string, sf::Texture> &texturesMap);
 	void loadAllTextures();
+	void handleCamera();
 	void resetMapSprites();
 };
 

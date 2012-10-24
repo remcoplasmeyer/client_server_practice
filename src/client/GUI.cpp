@@ -71,6 +71,8 @@ GUI::GUI(Client * client) {
 	sf::RenderWindow window(sf::VideoMode(1024, 768), "Client", sf::Style::Default, sf::ContextSettings(32));
 	this->window = &window;
     this->window->setVerticalSyncEnabled(true);
+    window.setView(view);
+//    view.setCenter(500,0);
 //	this->window->setView(sf::View(sf::FloatRect(0, 0, this->window->getSize().x, this->window->getSize().y)));
 
     this->loadAllTextures();
@@ -128,6 +130,7 @@ GUI::GUI(Client * client) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawAllObjects();
 		//DONE DRAWING
+		handleCamera();
 
 		//activate window, for rendering
 		this->window->setActive();
@@ -159,22 +162,31 @@ void GUI::drawAllObjects() {
 	std::map<int, Player>::iterator playerItr;
 	for(playerItr = players.begin(); playerItr != players.end(); playerItr++) {
 		Player &player = playerItr->second;
+		//TODO: STORE CHAR SPRITES SOMEWHERE
 		sf::Sprite playerSprite;
 		int textureX;
-		int textureY;
+		int textureY = 0;
 		switch(player.state) {
 		case STANDING:
 			textureX = 0;
-			textureY = 0;
 			break;
 		case RUNNING:
-			textureX = 64;
-			textureY = 0;
+			if(player.textureStep < 5) {
+				textureX = 0;
+			} else {
+				textureX = 64;
+			}
+			break;
 		case INAIR:
-			textureX = 0;
-			textureY = 0;
+			textureX = 128;
 			break;
 		}
+		if(player.velx < 0) {
+			playerSprite.setScale(-1.f, 1.f);
+		} else {
+			playerSprite.setScale(1.f, 1.f);
+		}
+		playerSprite.setOrigin(32.f,0.f);
 		playerSprite.setTexture(this->spriteTextures[player.texturePath]);
 		playerSprite.setTextureRect(sf::IntRect(textureX, textureY, 64, 64));
 		playerSprite.setPosition(player.x,player.y);
@@ -226,6 +238,13 @@ void GUI::resetMapSprites() {
 			i++;
 		}
 	}
+}
+
+void GUI::handleCamera() {
+	//CHANGE CAMERA. TODO: MAKE PARAMETERS DYNAMIC
+	int viewCoordX = this->client->world.players[this->client->clientPlayerID].x-1024/2;
+	this->view.reset(sf::FloatRect(viewCoordX, 0, 1024, 768));
+	window->setView(view);
 }
 
 GUI::~GUI() {

@@ -32,10 +32,10 @@ Player::Player(std::string name, sf::IpAddress ip, int id, World *world) {
 	this->height = 64.f;
 	this->x = 0.f;
 	this->y = 0.f;
-	this->state = INAIR;
 	this->inAir = true;
 
 	this->texturePath = "images/chars/mario/template.png";
+	this->textureStep = 0;
 }
 
 Player::~Player() {
@@ -43,6 +43,8 @@ Player::~Player() {
 }
 
 void Player::Tick() {
+	oldx = x;
+	oldy = y;
 	int xDirection;
 	if(inputDirection == INPUT_LEFT) {
 		xDirection = -1.f;
@@ -56,27 +58,27 @@ void Player::Tick() {
 	checkCollision();
 	if(!collisionBottom) { inAir = true; } else { inAir = false; }
 	//Player is in the air
-	oldx = x;
-	oldy = y;
 
 	if(inAir) {
+		state = INAIR;
 		//we're in the air
 		vely = vely + set->GRAVITATION;
 	} else {
 		//we're on something solid
 		vely = 0.f;
 		if(inputJump) {
+			inAir = true;
 			vely = -1*set->VELJUMP;
-		}
-	}
-	//this happens basically every tick, it's the new x and y position
-	if(!inAir) {
-		if(xDirection == 0) {
-			//not inputting left or right (player wants to stop moving)
-			if(velx > 0) { velx = velx - set->VELMOVING; }
-			if(velx < 0) { velx = velx + set->VELMOVING; }
 		} else {
-			velx = velx + xDirection * set->VELMOVING;
+			if(xDirection != 0.f) {
+				state = RUNNING;
+				velx = velx + xDirection * set->VELMOVING;
+				if(textureStep > 9) { textureStep = 0; } else { textureStep++; }
+			} else {
+				if(velx > 0) { velx = velx - set->VELMOVING; }
+				if(velx < 0) { velx = velx + set->VELMOVING; }
+				state = STANDING;
+			}
 		}
 	}
 	if(velx > set->MAXWALKSPEED) { velx = set->MAXWALKSPEED; }

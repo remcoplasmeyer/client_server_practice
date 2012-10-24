@@ -37,6 +37,7 @@ public:
 
 	//used for drawing
 	std::string texturePath;
+	int textureStep;
 
 	Player();
 	Player(std::string name, sf::IpAddress ipString, int id, World *world);
