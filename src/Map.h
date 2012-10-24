@@ -29,11 +29,16 @@ struct Texture {
 	int x;										//x-coordinate of texture (x*TILEWIDTH) in the .png
 	int y;										//y-coordinate of texture (y*TILEWIDTH) in the .png
 };
+struct tileCoord {
+	int x;
+	int y;
+};
 
 class Map {
 public:
 	std::vector<std::vector<Tile> > tiles;
 	std::vector<Texture> textures;						//name of the textures, we'll copy the sf::textures to
+	std::vector<tileCoord> playerSpawns;
 
 	std::string name;
 	std::string background;

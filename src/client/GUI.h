@@ -11,25 +11,28 @@
 #include <gl/glu.h>
 #include "Drawable.h"
 #include "Sprite.h"
+#include "../Player.h"
 #include <boost/shared_ptr.hpp>
 
 class Client;					//we don't include Client.h in the header file to prevent infinite recursion
-enum guiState { NOGUI, GUIMAINSCREEN, GUIINGAME, GUILOADINGWORLD, GUILOADINGMAINSCREEN };
 
 class GUI {
 public:
 	Client *client;
-	sf::RenderWindow window;
-	int state;
+	sf::RenderWindow *window;					//pointer because i'm too lazy to use initializer lists
 
 	typedef boost::shared_ptr<Drawable> todraw_ptr;
 	std::vector<todraw_ptr> toDraw;				//objects that are going to be drawn in current iteration
-	std::vector<GLuint> textures;				//this vector should relate to the enum type in <Particle.h>
 
 	//things gotten from the map
 	std::vector<Sprite> mapSprites;				//list of single 64*64 sprites, these will be drawn
 	std::vector<sf::Texture> mapTextures;		//list of .png textures
 	std::vector<int> mapTexturesIndex;
+
+	//textures
+	std::map<std::string, GLuint> textures;				//map of all mandatory opengl textures (particles etc)
+	std::map<std::string, sf::Texture> spriteTextures;		//map of all mandatory sfml textures (sprites)
+
 
 	GUI() { };
 	GUI(Client*);
@@ -37,7 +40,9 @@ public:
 
 private:
 	void drawAllObjects();
-	void loadTextures();
+	void loadTexturesIntoMap(std::vector<std::string> &textureFiles, std::map<std::string, GLuint> &texturesVector);
+	void loadSpritesIntoMap(std::vector<std::string> &textureFiles, std::map<std::string, sf::Texture> &texturesMap);
+	void loadAllTextures();
 	void resetMapSprites();
 };
 

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "GUI.h"
 #include "Client.h"
+#include "../Player.h"
 #include "../Packet.h"
 #include "../Map.h"
 #include <boost/random/mersenne_twister.hpp>
@@ -16,6 +17,7 @@ int main() {
 
 Client::Client() {
 	//standard values
+	state = INITLOAD;
 	Settings settings();								//load settings
 	serverPort = 1234;
 	//end standard values
@@ -25,6 +27,10 @@ Client::Client() {
 	//HARDCODED STUFF TODO: INIT THESE VIA GUI/SETTINGS/SERVER/WHATEVER
 	sf::IpAddress serverIP("94.208.18.229");			//hardcoded for now
 	world.setMap("test");
+	this->clientPlayerID = 1;
+	World *worldptr = &world;
+	world.addPlayer(Player("Remco", "123", this->clientPlayerID, worldptr));
+	state = INGAME;
 	//END HARDCODED STUFF
 
 //	this->connectServer(serverIP);
@@ -89,6 +95,44 @@ void Client::connectServer(sf::IpAddress serverIP) {
 			connected = true;
 		}
 	}
+}
+
+//this function handles all the input, in every state
+void Client::getInputAndTick() {
+	//HANDLE INPUT FIRST
+	switch(state) {
+	case INGAME:
+	//client is in-game, so we get the controls input
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			world.players[this->clientPlayerID].inputJump = true;
+		} else {
+			world.players[this->clientPlayerID].inputJump = false;
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			world.players[this->clientPlayerID].inputDuck = true;
+		} else {
+			world.players[this->clientPlayerID].inputDuck = false;
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			world.players[this->clientPlayerID].inputDirection = INPUT_LEFT;
+		}
+		if(!sf::Keyboard::isKeyPressed(sf::Keyboard::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			world.players[this->clientPlayerID].inputDirection = INPUT_RIGHT;
+		}
+		if(!sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			world.players[this->clientPlayerID].inputDirection = NODIRECTION;
+		}
+		break;
+	}
+
+	//NOW TICK AAAAALL THE ENTITIES
+	//LOOP AAAALLL THE PLAYERS
+	std::map<int, Player> &players = this->world.players;
+	std::map<int, Player>::iterator playerItr;
+	for(playerItr = players.begin(); playerItr != players.end(); playerItr++) {
+		Player &player = playerItr->second;
+	}
+	this->world.tick();
 }
 
 boost::random::mt19937 gen = boost::random::mt19937();

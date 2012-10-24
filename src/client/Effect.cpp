@@ -17,7 +17,7 @@ Effect::Effect() {
 	// TODO Auto-generated constructor stub
 }
 
-Effect::Effect(int x, int y, int type, GUI *gui) {
+Effect::Effect(float x, float y, int type, GUI *gui) {
 	this->gui = gui;
 	this->x = x;
 	this->y = y;

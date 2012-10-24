@@ -8,6 +8,7 @@
 #ifndef PARTICLE_H_
 #define PARTICLE_H_
 #include "Drawable.h"
+#include <string>
 
 /*class of one 'particle' or a bitmap of one particle
  * too lazy for getters/setters right now
@@ -29,9 +30,10 @@ enum particleType { LIGHTPARTICLE };		//different types of animations/particles
 class Particle : public Drawable {
 public:
 	int type;	//location, velocity, type(effectType) and angle of the particle
-	float x, y;
+	float x, y, size;
 	double angle, vel;
 	Effect *effect;
+	std::string texturePath;
 
 	Particle();
 	Particle(int x, int y, int vel, int angle, int type, Effect *effect);

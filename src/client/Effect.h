@@ -18,11 +18,12 @@ enum effectType { SINGLE, SPLATTER };		//different types of effects
 
 class Effect {
 public:
-	int x, y, type;						//base location of effect and type
+	float x, y;
+	int type;						//base location of effect and type
 	GUI *gui;
 
 	Effect();
-	Effect(int x, int y, int type, GUI *gui);
+	Effect(float x, float y, int type, GUI *gui);
 	~Effect();
 };
 

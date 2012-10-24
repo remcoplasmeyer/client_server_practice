@@ -10,7 +10,7 @@
 #include "SFML/Graphics.hpp"
 
 class GUI;
-class Sprite : public sf::Sprite {
+class Sprite {
 public:
 	//map & location settings
 	int x, y, width, height;

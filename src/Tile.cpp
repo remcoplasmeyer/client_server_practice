@@ -16,6 +16,8 @@ Tile::Tile(int type, int textureType, int textureX, int textureY, int x, int y) 
 	this->type = type;
 	this->tileImage = tileImage;
 	this->textureType = textureType;
+	this->textureX = textureX;
+	this->textureY = textureY;
 	//we'll calculate these later and just preset them for now
 	this->offsetX = 0;
 	this->offsetY = 0;

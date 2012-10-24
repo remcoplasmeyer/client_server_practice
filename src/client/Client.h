@@ -15,10 +15,13 @@
 
 class Client {
 public:
+	int state;	enum clientState { INITLOAD, INGAME };		//client state
+
 	sf::UdpSocket clientSocket;
 	short unsigned int serverPort;
 	GUI gui;
 	World world;
+	int clientPlayerID;					//id of the player this client controls
 	Settings settings;
 
 	sf::Uint32 sequence;				//current sequence nr
@@ -26,6 +29,7 @@ public:
 	Client();
 	virtual ~Client();
 
+	void getInputAndTick();
 	void connectServer(sf::IpAddress);
 	Packet receivePacket();
 };

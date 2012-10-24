@@ -6,6 +6,7 @@
  */
 
 #include "Particle.h"
+#include "../Log.h"
 #include <GL/glu.h>
 #include "GUI.h"
 #include "Effect.h"
@@ -25,7 +26,9 @@ Particle::Particle(int x, int y, int vel, int angle, int type, Effect *effect) {
 	this->type = type;
 	this->angle = angle*(3.14/180);		//convert to radian
 	this->effect = effect;
-	Drawable::life = 180;					//3 seconds
+	this->life = 180;
+	size = float(generate_random_number(0, 25));			//TODO: PUT THIS AS PARAMETER
+	this->texturePath = "images/effects/particle_splatter.png";
 }
 
 Particle::~Particle() {
@@ -35,34 +38,38 @@ Particle::~Particle() {
 
 //this function is called every game loop
 void Particle::Draw() {
-	x = float(x+cos(angle)*vel);
-	y = float(y+sin(angle)*vel);
+	x = float(x-cos(angle)*vel);
+	y = float(y-sin(angle)*vel);
+	float x2 = float(x + size);
+	float y2 = float(y + size);
+
 
 	// Apply some transformations
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(float(x), float(y), -200.f);
-	glBindTexture(GL_TEXTURE_2D, this->effect->gui->textures[0]);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, this->effect->gui->textures[this->texturePath]);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	float alpha = (float(life)+1)/160;
-	float random = float(generate_random_number(0, 100))/100;
-	glColor4f(0.5f, 0.f, 0.f, alpha);
 	//start drawing
+	float alpha = (float(this->life)+1)/160;
+//	float random = float(generate_random_number(0, 100))/100;
+	glColor4f(0.5f, 0.f, 0.f, alpha);
 	glBegin(GL_QUADS);
 
 		glTexCoord2f(0.f,0.f);
-		glVertex2f(0.f, 0.f);
+		glVertex2f(x, y);
 
 		glTexCoord2f(0.f,1.f);
-		glVertex2f(0.f, 10.f);
+		glVertex2f(x, y2);
 
 		glTexCoord2f(1.f,1.f);
-		glVertex2f(10.f, 10.f);
+		glVertex2f(x2, y2);
 
 		glTexCoord2f(1.f,0.f);
-		glVertex2f(10.f, 0.f);
+		glVertex2f(x2, y);
 
 	glEnd();
+
 
 	this->life--;
 }

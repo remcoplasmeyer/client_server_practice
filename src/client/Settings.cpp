@@ -7,6 +7,7 @@
 
 #include "Settings.h"
 #include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 
 Settings::Settings() {
 	//hardcoded settings, for now

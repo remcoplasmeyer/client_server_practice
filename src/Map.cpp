@@ -130,27 +130,31 @@ void Map::loadMap(std::string mapName) {
 				this->tiles.at(i).push_back(tile);
 			}
 		}
-		//get all textures
+		//get AAAALLL the textures
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.visuals")) {
 			assert(v.first.empty());
-
-			int x = v.second.get<int>("x");
-			int y = v.second.get<int>("y");
+			int x = 1;		//TEMP, TODO: DELETE THIS
+			int y = 1;
 			std::string name = v.second.get<std::string>("name");			//name of .png file in /images/tiles/[name].png
 			Texture texture = {name, x, y};
 			this->textures.push_back(texture);
 		}
-		//get all tiles
+		//get AAAALLL the tiles
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.tiles")) {
 			assert(v.first.empty());
 			int y = v.second.get<int>("y");
 			int x = v.second.get<int>("x");
 			int type = v.second.get<int>("t");
 			int visual = v.second.get<int>("v");
-			int textureX = this->textures.at(visual).x;
-			int textureY = this->textures.at(visual).y;
+			int textureX = v.second.get<int>("vx");
+			int textureY = v.second.get<int>("vy");
 			std::vector<Tile> *yVec = &tiles[x];
 			yVec->insert(yVec->begin() + y, Tile(type,visual,textureX, textureY, x, y));
+		}
+		//get AAAALLL the spawn points
+		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.playerspawns")) {
+			tileCoord playerSpawnPoint = { v.second.get<int>("x"), v.second.get<int>("y") };
+			this->playerSpawns.push_back(playerSpawnPoint);
 		}
 	} catch (std::exception const& e) {
 		std::cerr << e.what() << std::endl;

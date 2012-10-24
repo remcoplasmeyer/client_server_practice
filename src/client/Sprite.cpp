@@ -16,8 +16,8 @@ Sprite::Sprite() {
 }
 
 Sprite::Sprite(GUI *gui, int mapTextureIndex, int x, int y) {
-	this->textureX = x;
-	this->textureY = y;
+	this->textureX = x*64;
+	this->textureY = y*64;
 	this->mapTextureType = mapTextureIndex;
 	this->gui = gui;
 	sprite.setTexture(gui->mapTextures.at(mapTextureType));

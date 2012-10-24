@@ -23,6 +23,9 @@ public:
 	sf::Uint16 prot;										//protocol id, client version or something like that
 	std::string username;
 
+	//PLAYER CONTROLS
+//	sf::K keyUp, keyDown, keyLeft, keyRight;
+
 	Settings();
 	~Settings();
 };

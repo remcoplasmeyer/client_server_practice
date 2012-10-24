@@ -20,7 +20,7 @@ public:
 	int type;
 	int x, y;							//we also save these here for easy access
 	int textureX, textureY;
-	int width, height;					//size relative to 1 tile
+	float width, height;					//size relative to 1 tile
 	float offsetX, offsetY;				//offset from upperleft corner of tile in [0,1>, always 0 on non-moving tiles
 
 	int vel, angle;						//always 0 for non-moving tiles
