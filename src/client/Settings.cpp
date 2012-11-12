@@ -8,12 +8,13 @@
 #include "Settings.h"
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include "Client.h"
 
 Settings::Settings() {
 	//hardcoded settings, for now
 	username = "Anonymous";
-	windowWidth = 800;
-	windowHeight = 600;
+	windowWidth = 1024;
+	windowHeight = 768;
 	sf::Uint16 prot(321);
 	reconnectTimeOut = 600;
 	clientPort = 1235;

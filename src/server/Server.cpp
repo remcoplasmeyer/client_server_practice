@@ -25,62 +25,106 @@ Server::Server() {
 	sf::Clock clock;
 	this->sequence = 0;
 
+
 	//MANUALLY MAKE WORLD FOR NOW
 	//init a world and packetsender
 	packetsender.setServer(this);
-	World world;
-	world.setMap("test");
+	currentWorld.setMap("test");
 
+	int loop = 0;
+	int fps = 1000/60;
 	while(true) {
-		sequence++;
-		frametime = clock.getElapsedTime().asSeconds();					//this is the amount of frames elapsed since the last loop
 
-		//TODO: WE STILL HAVE TO DO SOMETHING WITH THE ACK HERE
-		basePacketStruct serverBasePacket { this->prot, this->sequence, 1, 1 };
+		frametime = clock.getElapsedTime().asMilliseconds();					//this is the amount of frames elapsed since the last loop
+		if(frametime >= (fps)) {
+			this->sequence++;
+			loop++;
+			if(loop == 5) {
+				loop = 0;
+			}
+			//TODO: WE STILL HAVE TO DO SOMETHING WITH THE ACK HERE
+			basePacketStruct serverBasePacket { this->prot, this->sequence, 1, 1};
 
-		sf::Packet receivingPacket;
-		sf::IpAddress receivingAddress;
-		unsigned short int receivingPort;
-		if(serverSocket.receive(receivingPacket, receivingAddress, receivingPort) == sf::Socket::Done) {
-			//we get the basePacket(which every packet contains) from the packet
-			int type;
-			receivingPacket >> type;
-			basePacketStruct basePacket;
-			receivingPacket >> basePacket;
-			switch(type) {
-			case CONNECTPACKET:
-			{	//added curly brackets for scope problems
-				/*	someone connected, so we:
-				 * 		send the connector the map data
-				 * 		add his player to the world
-				 * 		notify all other clients of a new player
-				 */
-				connectPacketStruct connectPacket;
-				receivingPacket >> connectPacket;
-				this->players[receivingAddress.toString()] = Player(connectPacket.name, receivingAddress);
-				serverMessageStruct serverMessage = { "NEW PLAYER CONNECTED: " + connectPacket.name };
-				this->packetsender.addToQueue(Packet(serverMessage, serverBasePacket));
-				newPlayerInitStruct newPlayerInit { this->currentWorld.currentMap.name };
-				this->packetsender.addToQueue(Packet(newPlayerInit, serverBasePacket));
+			sf::Packet receivingPacket;
+			sf::IpAddress receivingAddress;
+			unsigned short int receivingPort;
+			while(serverSocket.receive(receivingPacket, receivingAddress, receivingPort) == sf::Socket::Done) {
+				//we get the basePacket(which every packet contains) from the packet
+				int type;
+				receivingPacket >> type;
+				basePacketStruct basePacket;
+				receivingPacket >> basePacket;
+				//HANDLE AAALLLL THE PACKETS
+				switch(type) {
+				case CONNECTPACKET:
+				{	//added curly brackets for scope problems
+					/*	someone connected, so we:
+					 * 		send the connector the map data
+					 * 		add his player to the world
+					 * 		notify all other clients of a new player
+					 */
+					connectPacketStruct connectPacket;
+					receivingPacket >> connectPacket;
+					FILE_LOG(logINFO) << "New player connected at " << connectPacket.clientPort <<": " << connectPacket.name << " at: " << receivingAddress.toString();
+					int playerID = this->currentWorld.players.size()+1;
+					World* worldptr;
+					worldptr = &this->currentWorld;
+					Player connectingPlayer(connectPacket.name, receivingAddress, playerID, worldptr);
+					connectingPlayer.clientPort = connectPacket.clientPort;
+					std::stringstream ss;
+					ss << connectingPlayer.clientPort;
+					this->players[receivingAddress.toString() + ":" + ss.str()] = connectingPlayer;
+					this->currentWorld.players[playerID] = Player(connectPacket.name, receivingAddress, playerID, worldptr);
+					serverMessageStruct serverMessage = { "NEW PLAYER CONNECTED at: " + connectPacket.name };
+					this->packetsender.addToQueue(Packet(serverMessage, serverBasePacket));
+
+					//TODO: ONLY SEND THIS TO THE CONNECTING PLAYERS
+					newPlayerInitStruct newPlayerInit = { this->currentWorld.currentMap.name, playerID };
+					this->packetsender.addToQueue(Packet(newPlayerInit, serverBasePacket));
+					FILE_LOG(logDEBUG) << "sent player init";
+
+				}
+					break;
+				case CHATPACKET:
+				{
+					FILE_LOG(logDEBUG) << "chatPacket";
+					chatPacketStruct chatPacket;
+					receivingPacket >> chatPacket;
+					std::cout << "NEW MSG: " << chatPacket.message << std::endl;
+				}
+					break;
+				case MOVEPACKET:
+					//update world with movement
+					break;
+				case PLAYERINPUTPACKET:
+				{
+					//we receive input from the player
+					inputPacketStruct inputPacket;
+					receivingPacket >> inputPacket;
+					Player &inputPlayer = this->currentWorld.players[basePacket.id];
+					inputPlayer.inputJump = inputPacket.jump;
+					inputPlayer.inputDirection = inputPacket.direction;
+				}
+					break;
+				}
 			}
-				break;
-			case CHATPACKET:
-			{
-				chatPacketStruct chatPacket;
-				receivingPacket >> chatPacket;
-				std::cout << "NEW MSG: " << chatPacket.message << std::endl;
+			//updateworld here/*
+			this->currentWorld.tick();
+
+			if(loop == 4) {
+				//sending to players
+				std::map<int, Player> &players = this->currentWorld.players;
+				std::map<int, Player>::iterator playerItr;
+				for(playerItr = players.begin(); playerItr != players.end(); playerItr++) {
+					Player &player = playerItr->second;
+					playerMoveStruct playerMovePacket = { player.id, player.x, player.y, player.velx, player.vely, player.inputDirection, player.inputJump };
+					this->packetsender.addToQueue(Packet(playerMovePacket, serverBasePacket));
+				}
+				packetsender.sendQueueToAll();
 			}
-				break;
-			case MOVEPACKET:
-				//update world with movement
-				break;
-			}
+
+			clock.restart();
 		}
-		//updateworld here
-
-		//send packets here
-		packetsender.sendQueueToAll();
-
 	}
 
 }

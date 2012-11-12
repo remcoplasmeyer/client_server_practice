@@ -29,16 +29,19 @@ void packetSender::sendToAll(Packet *packet) {
 		typedef std::map<std::string, Player>::iterator it_type;
 		for(it_type iterator = server->players.begin(); iterator != server->players.end(); iterator++) {
 			Player &player = iterator->second;
-			int status = server->serverSocket.send(packet->sendingPacket, player.ip, this->server->clientPort);
+			FILE_LOG(logDEBUG) << player.clientPort;
+			int status = server->serverSocket.send(packet->sendingPacket, player.ip, player.clientPort);
 		}
 	}
 }
 
 void packetSender::sendQueueToAll() {
-	for(int i = 0; i < packageQueue.size() ; i++) {
-		Packet *packetPtr = &packageQueue[i];
-		sendToAll(packetPtr);
-		packageQueue.erase(packageQueue.begin() + i);
+	for(std::vector<Packet>::iterator packageItr = packageQueue.begin(); packageItr != packageQueue.end();) {
+		//we do not increment the iterator, because we're popping every element
+		Packet* packet;
+		packet = &(*packageItr);
+		sendToAll(packet);
+		packageQueue.erase(packageItr);
 	}
 }
 

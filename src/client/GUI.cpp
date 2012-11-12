@@ -18,6 +18,7 @@
 #include "Effect.h"
 #include "Drawable.h"
 #include <algorithm>
+#include <cmath>
 
 #include <boost/foreach.hpp>
 
@@ -45,6 +46,7 @@ void GUI::loadTexturesIntoMap(std::vector<std::string> &textureFiles, std::map<s
 void GUI::loadSpritesIntoMap(std::vector<std::string> &textureFiles, std::map<std::string, sf::Texture> &texturesMap) {
 	for(unsigned int i = 0; i < textureFiles.size(); ++i) {
 		sf::Texture texture;
+		texture.setRepeated(true);
 		texture.loadFromFile(textureFiles[i]);
 		texturesMap[textureFiles.at(i)] = texture;
 	}
@@ -63,17 +65,23 @@ void GUI::loadAllTextures() {
 	charTextures.push_back("images/chars/mario/template.png");
 	std::vector<std::string> &charTexturesLink = charTextures;
 	loadSpritesIntoMap(charTexturesLink, spriteTextureLink);
+
+	std::vector<std::string> bgTextures;
+	bgTextures.push_back("images/backgrounds/testbg.png");
+	std::vector<std::string> &bgTexturesLink = bgTextures;
+	loadSpritesIntoMap(bgTexturesLink, spriteTextureLink);
 }
 
 GUI::GUI(Client * client) {
 	this->client = client;
+	this->client->setGUI(this);
 
-	sf::RenderWindow window(sf::VideoMode(1024, 768), "Client", sf::Style::Default, sf::ContextSettings(32));
+	sf::RenderWindow window(sf::VideoMode(this->client->settings.windowWidth, this->client->settings.windowHeight), "Client", sf::Style::Default, sf::ContextSettings(32));
 	this->window = &window;
     this->window->setVerticalSyncEnabled(true);
     window.setView(view);
 //    view.setCenter(500,0);
-//	this->window->setView(sf::View(sf::FloatRect(0, 0, this->window->getSize().x, this->window->getSize().y)));
+	this->window->setView(sf::View(sf::FloatRect(0, 0, this->window->getSize().x, this->window->getSize().y)));
 
     this->loadAllTextures();
 	this->resetMapSprites();
@@ -108,19 +116,27 @@ GUI::GUI(Client * client) {
 			if (event.type == sf::Event::Closed) {
 				this->window->close();
 			}
+			if(event.type == sf::Event::LostFocus) {
+				this->focus = false;
+			}
+			if(event.type == sf::Event::GainedFocus) {
+				this->focus = true;
+			}
 		}
 		//DONE GETTING WINDOW EVENTS
 
 		//GET INPUT AND TICK CLIENT/WORLD
 		//we fetch all other inputs here
 		//we handle mouse inputs here, because they are gui dependant
-		sf::Vector2i mouseVector = sf::Mouse::getPosition(window);
-		float mouseX = float(mouseVector.x);
-		float mouseY = float(mouseVector.y);
-		//left click
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			// Clear color and depth buffer
-			Effect effect(mouseX, mouseY, SPLATTER, this);
+		if(focus) {
+			sf::Vector2i mouseVector = sf::Mouse::getPosition(window);
+			float mouseX = float(mouseVector.x);
+			float mouseY = float(mouseVector.y);
+			//left click
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				// Clear color and depth buffer
+				Effect effect(mouseX, mouseY, SPLATTER, this);
+			}
 		}
 		this->client->getInputAndTick();
 		//DONE TICKING
@@ -140,8 +156,20 @@ GUI::GUI(Client * client) {
 
 //draw all objects in toDraw and copies toDrawNext to toDraw
 void GUI::drawAllObjects() {
-	//LOOP AAAALLL THE TILES!
 	this->window->pushGLStates();
+	//DRAW MAP BG
+	int mapWidth = this->client->world.currentMap.width*this->client->world.settings.TILESIZE;
+	int mapHeight = this->client->world.currentMap.height*this->client->world.settings.TILESIZE;
+	sf::Texture &bgTexture = this->spriteTextures[this->client->world.currentMap.background];
+	bgTexture.setRepeated(true);
+	sf::Sprite bgSprite;
+	bgTexture.setRepeated(true);
+	bgSprite.setTexture(bgTexture);
+	bgSprite.setPosition(0,0);
+	bgSprite.setTextureRect(sf::IntRect(0, 0, mapWidth, mapHeight));
+	this->window->draw(bgSprite);
+
+	//LOOP AAAALLL THE TILES!
 	std::vector<std::vector<Tile> > &tiles = this->client->world.currentMap.tiles;
 	std::vector<std::vector<Tile> >::iterator tileItr;
 	std::vector<Tile>::iterator tileYItr;
@@ -166,29 +194,31 @@ void GUI::drawAllObjects() {
 		sf::Sprite playerSprite;
 		int textureX;
 		int textureY = 0;
+		int charSize = 41;			//TODO: store this somewhere
 		switch(player.state) {
 		case STANDING:
 			textureX = 0;
 			break;
 		case RUNNING:
-			if(player.textureStep < 5) {
-				textureX = 0;
+			if(player.textureStep < 7) {
+				textureX = charSize;
 			} else {
-				textureX = 64;
+				textureX = 2*charSize;
 			}
 			break;
 		case INAIR:
-			textureX = 128;
+			textureX = 3*charSize;
 			break;
 		}
-		if(player.velx < 0) {
-			playerSprite.setScale(-1.f, 1.f);
-		} else {
-			playerSprite.setScale(1.f, 1.f);
+		//TODO: DO SOMETHING ABOUT SPRITE FLIPPING
+		int invert = 1;
+		if(!player.goingRight) {
+			invert = -1;
+			textureX = (textureX+charSize);
 		}
-		playerSprite.setOrigin(32.f,0.f);
+		playerSprite.setOrigin(float(invert),1.f);
 		playerSprite.setTexture(this->spriteTextures[player.texturePath]);
-		playerSprite.setTextureRect(sf::IntRect(textureX, textureY, 64, 64));
+		playerSprite.setTextureRect(sf::IntRect(textureX, textureY, invert*charSize, 64));
 		playerSprite.setPosition(player.x,player.y);
 		this->window->draw(playerSprite);
 	}
@@ -241,9 +271,14 @@ void GUI::resetMapSprites() {
 }
 
 void GUI::handleCamera() {
-	//CHANGE CAMERA. TODO: MAKE PARAMETERS DYNAMIC
-	int viewCoordX = this->client->world.players[this->client->clientPlayerID].x-1024/2;
-	this->view.reset(sf::FloatRect(viewCoordX, 0, 1024, 768));
+	//CHANGE CAMERA
+	int windowLength = this->client->settings.windowWidth;
+	int viewCoordX = this->client->world.players[this->client->clientPlayerID].x-windowLength*0.5;
+	if (viewCoordX < 0) { viewCoordX = 0; }
+	int mapWidth = this->client->world.currentMap.width;
+	int tileSize = this->client->world.settings.TILESIZE;
+	if (viewCoordX > (mapWidth*tileSize-windowLength)) { viewCoordX = mapWidth*tileSize-windowLength; }
+	this->view.reset(sf::FloatRect(viewCoordX, 0, window->getSize().x, window->getSize().y));
 	window->setView(view);
 }
 

@@ -24,18 +24,25 @@
 struct basePacketStruct {
 	sf::Uint16 prot;//protocol id, ignore all packets with the wrong protocol
 	sf::Uint32 sequence;	//this is the sequence number of our server/packet
-	sf::Uint16 ack;						//acknowledgement
-	sf::Uint32 ackbitfield;				//32 bits to ack in bitfield
+	sf::Uint32 ack;						//acknowledgement
+	sf::Uint16 id;				//32 bits to ack in bitfield
 };
 
 
 struct connectPacketStruct {
 	std::string name;
+	short unsigned int clientPort;
 };
 struct chatPacketStruct {
 	std::string clientIP;			//only set at receiving server
 	std::string name;				//only set at receiving client
 	std::string message;
+};
+
+//this packet contains input from the client
+struct inputPacketStruct {
+	bool jump;
+	sf::Uint8 direction;
 };
 
 struct statePacketStruct {
@@ -46,6 +53,7 @@ struct statePacketStruct {
 //which is currently just the map name for the client to load
 struct newPlayerInitStruct {
 	std::string mapName;
+	sf::Uint16 playerID;
 };
 
 struct movePacketStruct {
@@ -54,6 +62,17 @@ struct movePacketStruct {
 
 struct serverMessageStruct {
 	std::string message;
+};
+
+//GAMEPLAY PACKETS FROM THE SERVER
+struct playerMoveStruct {
+	int playerid;
+	float x;
+	float y;
+	float velx;
+	float vely;
+	sf::Uint8 direction;
+	bool jump;
 };
 
 //all the packet overloaders
@@ -67,9 +86,13 @@ sf::Packet& operator >>(sf::Packet& packet, newPlayerInitStruct& m);
 sf::Packet& operator <<(sf::Packet& packet, const newPlayerInitStruct& m);
 sf::Packet& operator >>(sf::Packet& packet, serverMessageStruct& m);
 sf::Packet& operator <<(sf::Packet& packet, const serverMessageStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, playerMoveStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const playerMoveStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, inputPacketStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const inputPacketStruct& m);
 
 enum packetType {
-	CONNECTPACKET, NEWPLAYERINITPACKET, CHATPACKET, MOVEPACKET, STATEPACKET, SERVERMESSAGEPACKET //different types of effects
+	CONNECTPACKET, NEWPLAYERINITPACKET, CHATPACKET, MOVEPACKET, STATEPACKET, SERVERMESSAGEPACKET, PLAYERINPUTPACKET, PLAYERMOVEPACKET //different types of effects
 };
 
 class Packet {
@@ -83,6 +106,9 @@ public:
 	statePacketStruct statePacket;
 	serverMessageStruct serverMessage;
 	newPlayerInitStruct newPlayer;
+	inputPacketStruct inputPacket;
+
+	playerMoveStruct playerMovePacket;
 
 	sf::Packet sendingPacket;
 	sf::IpAddress clientIP;										//always IP of the client, never the server
@@ -92,6 +118,8 @@ public:
 	Packet(chatPacketStruct chatPacket, basePacketStruct basePacket);
 	Packet(serverMessageStruct packet, basePacketStruct basePacket);
 	Packet(newPlayerInitStruct packet, basePacketStruct basePacket);
+	Packet(inputPacketStruct packet, basePacketStruct basePacket);
+	Packet(playerMoveStruct packet, basePacketStruct basePacket);
 //	Packet(struct movePacketStruct);
 //	Packet(struct statePacketStruct);
 

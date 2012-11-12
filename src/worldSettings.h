@@ -24,6 +24,7 @@ public:
 	int TILESIZE;
 	float MAXWALKSPEED		;
 	float GROUNDFRICTION	;
+	float AIRFRICTION		;
 
 	worldSettings();
 	~worldSettings();

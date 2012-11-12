@@ -17,7 +17,7 @@ Player::Player() {
 
 }
 
-Player::Player(std::string name, sf::IpAddress ip, int id, World *world) {
+Player::Player(std::string name, sf::IpAddress ip, int id, World* world) {
 	this->name = name;
 	this->ipString = ip.toString();
 	this->ip = ip;
@@ -26,9 +26,11 @@ Player::Player(std::string name, sf::IpAddress ip, int id, World *world) {
 	this->vely = 0.f;
 	this->world = world;
 	this->set = &world->settings;
+	this->inputDirection = NODIRECTION;
 
+	this->sequence = 0;
 	//TODO: GENERATE THESE VARIABLES
-	this->width = 32.f;
+	this->width = 41.f;
 	this->height = 64.f;
 	this->x = 0.f;
 	this->y = 0.f;
@@ -47,37 +49,52 @@ void Player::Tick() {
 	oldy = y;
 	int xDirection;
 	if(inputDirection == INPUT_LEFT) {
+		goingRight = false;
 		xDirection = -1.f;
 	}
 	else if(inputDirection == INPUT_RIGHT) {
+		goingRight = true;
 		xDirection = 1.f;
 	} else {
 		xDirection = 0.f;
 	}
 	resetCheckingVars();
 	checkCollision();
-	if(!collisionBottom) { inAir = true; } else { inAir = false; }
+	if(!collisionBottom) { inAir = true; } else {
+		if(vely == 0) {
+			inAir = false;
+		}
+	}
 	//Player is in the air
 
 	if(inAir) {
 		state = INAIR;
 		//we're in the air
 		vely = vely + set->GRAVITATION;
+		velx = velx + xDirection * set->AIRFRICTION;
 	} else {
 		//we're on something solid
 		vely = 0.f;
 		if(inputJump) {
 			inAir = true;
-			vely = -1*set->VELJUMP;
+			if(vely == 0) {
+				vely = -1*set->VELJUMP;
+			}
 		} else {
 			if(xDirection != 0.f) {
 				state = RUNNING;
 				velx = velx + xDirection * set->VELMOVING;
-				if(textureStep > 9) { textureStep = 0; } else { textureStep++; }
+				if(textureStep > 13) { textureStep = 0; } else { textureStep++; }		//used for textures frames
 			} else {
-				if(velx > 0) { velx = velx - set->VELMOVING; }
-				if(velx < 0) { velx = velx + set->VELMOVING; }
 				state = STANDING;
+				if(velx > 0) {
+						velx = velx - set->GROUNDFRICTION;
+						if(velx < 0) { velx = 0; }
+				}
+				else if(velx < 0) {
+					velx = velx + set->GROUNDFRICTION;
+					if(velx > 0) { velx = 0; }
+				}
 			}
 		}
 	}
@@ -85,9 +102,40 @@ void Player::Tick() {
 	if(velx < set->MAXWALKSPEED*-1.f) { velx = set->MAXWALKSPEED*-1; }
 	x = x + velx;
 	y = y + vely;
+	//CHECK IF WE'RE OUT OF MAP BOUNDS
+	if(x < -1*this->world->settings.TILESIZE) {
+		x = this->world->currentMap.width*this->world->settings.TILESIZE + x;
+	}
+	else if(x > this->world->currentMap.width*this->world->settings.TILESIZE) {
+		x = this->world->currentMap.width*this->world->settings.TILESIZE - x;
+	}
+	if(y > (this->world->currentMap.height+1)*this->world->settings.TILESIZE) {
+		y = (this->world->currentMap.height+1)*this->world->settings.TILESIZE - y;
+	}
+	else if(y < -1*this->world->settings.TILESIZE) {
+		y = (this->world->currentMap.height+1)*this->world->settings.TILESIZE + y;
+	}
+	//DONE OUT OF BOUNDS CHECKING
 	if(collisionBottom) {
-		y = maxY-height;
-		inAir = false;
+		if(vely >= 0) {
+			vely = 0;
+			y = maxY;
+			inAir = false;
+		}
+	}
+	if(collisionRight) {
+		x = maxX;
+		velx = 0;
+	}
+	if(collisionLeft) {
+		x = minX;
+		velx = 0;
+	}
+	if(collisionTop) {
+		if(vely < 0) {
+			y = minY;
+			vely = 0;
+		}
 	}
 }
 
@@ -114,23 +162,75 @@ void Player::checkCollision() {
 			Tile tile = *tileYItr;
 			if(tile.solid) {
 				bool intersect;
-				float checkY;
+				float checkY, checkX;
 				if(vely == 0) { checkY = 1.f; } else { checkY = vely; }
-				intersect = this->world->boundingBoxIntersect(x+velx, y+checkY, width, height, float(tile.x*set->TILESIZE), float(tile.y*set->TILESIZE), float(tile.width*set->TILESIZE), float(tile.height*set->TILESIZE));
+				if(velx == 0) { checkX = 0.f; } else { checkX = velx; }
+				intersect = this->world->boundingBoxIntersect(x+checkX, y+checkY, width, height, float(tile.x*set->TILESIZE), float(tile.y*set->TILESIZE), float(tile.width*set->TILESIZE), float(tile.height*set->TILESIZE));
+				//if intersect is true, the player will intersect if we keep the current velx and vely
 				if(intersect) {
-					//check which way we're moving, to find the relative position to the tile
-					//also decide the max x and y, to prevent getting in the tiles
-					if(y+checkY+height > tile.y*set->TILESIZE && y+checkY+height < tile.y*set->TILESIZE+tile.height*set->TILESIZE) {
+					float tileY = tile.y*set->TILESIZE;
+					float tileX = tile.x*set->TILESIZE;
+					float tileYBottom = tileY+tile.height*set->TILESIZE;
+					float tileXRight= tileX+tile.width*set->TILESIZE;
+					//we should check the position of the player relative to the colliding object
+					//but I'm too lazy right now, so we'll just use the direction we're walking right now
+					//so, TODO: improve this
+					//
+					if(y+height+checkY >= tileY && (x<tileXRight && x+width>tileX)) {
 						collisionBottom = true;
-						maxY = tile.y*set->TILESIZE;
+						maxY = tileY-height;
 					}
-					else if(y+checkY < tile.y*set->TILESIZE && y+checkY > tile.y) {
+					if(x+width <= tileX && x+width+checkX >= tileX && (y+height > tileY)) {
+						collisionRight = true;
+						maxX = tileX-width;
+					}
+					if(y >= tileYBottom && y+checkY <= tileYBottom && (x<tileXRight && x+width>tileX)) {
 						collisionTop = true;
-						maxY = tile.y*set->TILESIZE;
+						minY = tileYBottom;
 					}
+					if(x >= tileXRight && x+checkX <= tileXRight && (y+height > tileY)) {
+						collisionLeft = true;
+						minX = tileXRight;
+					}
+
 				}
 			}
 		}
 	}
 }
 
+void Player::interpolate() {
+
+	if(this->x > this->interpolateX) {
+		this->x = x+velx;
+		if(this->x < this->interpolateX) {
+			this->x = this->interpolateX;
+		}
+	} else if ( this->x < this->interpolateX) {
+		this->x = x+velx;
+		if(this->x > this->interpolateX) {
+			this->x = this->interpolateX;
+		}
+	}
+
+	if(this->y > this->interpolateY) {
+		this->y = y+vely;
+		if(this->y < this->interpolateY) {
+			this->y = this->interpolateY;
+		}
+	} else if ( this->y < this->interpolateY) {
+		this->y = y+vely;
+		if(this->y > this->interpolateY) {
+			this->y = this->interpolateY;
+		}
+	}
+
+	if(abs(this->x - this->interpolateX) > 50) {
+		FILE_LOG(logDEBUG) << "interp differ too large: " << abs(this->x - this->interpolateX);
+		this->x = this->interpolateX;
+	}
+	if(abs(this->y - this->interpolateY) > 50) {
+		FILE_LOG(logDEBUG) << "interp differ too large: " << abs(this->y - this->interpolateY);
+		this->y = this->interpolateY;
+	}
+}

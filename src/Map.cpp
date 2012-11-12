@@ -119,6 +119,7 @@ void Map::loadMap(std::string mapName) {
 		boost::property_tree::read_json(localStream, pt);
 
 		this->name = pt.get<std::string>("map.name");
+		this->background = pt.get<std::string>("map.background");
 		this->width = pt.get<int>("map.width");
 		this->height = pt.get<int>("map.height");
 		for(int i = 0; i < width;i++) {

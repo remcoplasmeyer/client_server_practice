@@ -22,6 +22,7 @@ public:
 	sf::RenderWindow *window;					//pointer because i'm too lazy to use initializer lists
 	sf::View view;
 
+	bool focus;
 	typedef boost::shared_ptr<Drawable> todraw_ptr;
 	std::vector<todraw_ptr> toDraw;				//objects that are going to be drawn in current iteration
 
@@ -33,6 +34,7 @@ public:
 	//textures
 	std::map<std::string, GLuint> textures;				//map of all mandatory opengl textures (particles etc)
 	std::map<std::string, sf::Texture> spriteTextures;		//map of all mandatory sfml textures (sprites)
+	std::map<std::string, sf::Texture> bgTextures;		//map of all mandatory sfml textures (sprites)
 
 
 	GUI() { };
