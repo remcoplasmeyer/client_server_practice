@@ -6,6 +6,7 @@
  */
 
 #include "Effect.h"
+#include <windows.h>
 #include "gl/gl.h"
 #include <iostream>
 #include "GUI.h"

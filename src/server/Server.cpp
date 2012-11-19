@@ -42,8 +42,8 @@ Server::Server() {
 			if(loop == 5) {
 				loop = 0;
 			}
-			//TODO: WE STILL HAVE TO DO SOMETHING WITH THE ACK HERE
-			basePacketStruct serverBasePacket { this->prot, this->sequence, 1, 1};
+			//TODO: WE STILL HAVE TO DO SOMETHING WITH THE AK HER
+			basePacketStruct serverBasePacket = { this->prot, this->sequence, 1, 1};
 
 			sf::Packet receivingPacket;
 			sf::IpAddress receivingAddress;

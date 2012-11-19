@@ -7,6 +7,7 @@
  */
 
 #include "../Log.h"
+#include <windows.h>
 #include "GUI.h"
 #include "Client.h"
 #include <SFML/Window.hpp>
@@ -87,7 +88,8 @@ GUI::GUI(Client * client) {
 	this->resetMapSprites();
 
 	//get window settings
-	window.setFramerateLimit(60);
+	//window.setFramerateLimit(60);		we'll do this manually
+
 	// Set color and depth clear value
 	glClearDepth(1.f);
 	glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -108,49 +110,56 @@ GUI::GUI(Client * client) {
 	glOrtho(0.f, (float)this->window->getSize().x, (float)this->window->getSize().y, 0.f, -1.f, 1.f);
 
 	// The main loop - ends as soon as the window is closed
+	int fps = 1000/60;
+	float frametime;
+	sf::Clock clock;
 	while (this->window->isOpen()) {
-		//GET WINDOW EVENTS
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			//we fetch all window events in this loop
-			if (event.type == sf::Event::Closed) {
-				this->window->close();
+
+		frametime = clock.getElapsedTime().asMilliseconds();					//this is the amount of frames elapsed since the last loop
+		if(frametime >= (fps)) {
+			//GET WINDOW EVENTS
+			sf::Event event;
+			while (window.pollEvent(event)) {
+				//we fetch all window events in this loop
+				if (event.type == sf::Event::Closed) {
+					this->window->close();
+				}
+				if(event.type == sf::Event::LostFocus) {
+					this->focus = false;
+				}
+				if(event.type == sf::Event::GainedFocus) {
+					this->focus = true;
+				}
 			}
-			if(event.type == sf::Event::LostFocus) {
-				this->focus = false;
+			//DONE GETTING WINDOW EVENTS
+
+			//GET INPUT AND TICK CLIENT/WORLD
+			//we fetch all other inputs here
+			//we handle mouse inputs here, because they are gui dependant
+			if(focus) {
+				sf::Vector2i mouseVector = sf::Mouse::getPosition(window);
+				float mouseX = float(mouseVector.x);
+				float mouseY = float(mouseVector.y);
+				//left click
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					// Clear color and depth buffer
+					Effect effect(mouseX, mouseY, SPLATTER, this);
+				}
 			}
-			if(event.type == sf::Event::GainedFocus) {
-				this->focus = true;
-			}
+			this->client->getInputAndTick();
+			//DONE TICKING
+
+			//DRAW EVERYTHING
+			this->window->clear();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			drawAllObjects();
+			//DONE DRAWING
+			handleCamera();
+
+			//activate window, for rendering
+			this->window->setActive();
+			this->window->display();
 		}
-		//DONE GETTING WINDOW EVENTS
-
-		//GET INPUT AND TICK CLIENT/WORLD
-		//we fetch all other inputs here
-		//we handle mouse inputs here, because they are gui dependant
-		if(focus) {
-			sf::Vector2i mouseVector = sf::Mouse::getPosition(window);
-			float mouseX = float(mouseVector.x);
-			float mouseY = float(mouseVector.y);
-			//left click
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				// Clear color and depth buffer
-				Effect effect(mouseX, mouseY, SPLATTER, this);
-			}
-		}
-		this->client->getInputAndTick();
-		//DONE TICKING
-
-		//DRAW EVERYTHING
-		this->window->clear();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		drawAllObjects();
-		//DONE DRAWING
-		handleCamera();
-
-		//activate window, for rendering
-		this->window->setActive();
-		this->window->display();
 	}
 }
 
@@ -192,7 +201,7 @@ void GUI::drawAllObjects() {
 		Player &player = playerItr->second;
 		//TODO: STORE CHAR SPRITES SOMEWHERE
 		sf::Sprite playerSprite;
-		int textureX;
+		int textureX = 0;
 		int textureY = 0;
 		int charSize = 41;			//TODO: store this somewhere
 		switch(player.state) {
@@ -219,6 +228,7 @@ void GUI::drawAllObjects() {
 		playerSprite.setOrigin(float(invert),1.f);
 		playerSprite.setTexture(this->spriteTextures[player.texturePath]);
 		playerSprite.setTextureRect(sf::IntRect(textureX, textureY, invert*charSize, 64));
+		playerSprite.setScale(invert,1);
 		playerSprite.setPosition(player.x,player.y);
 		this->window->draw(playerSprite);
 	}

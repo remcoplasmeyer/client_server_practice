@@ -6,6 +6,7 @@
  */
 
 #include "Sprite.h"
+#include <windows.h>
 #include "SFML/Graphics.hpp"
 #include "GUI.h"
 #include "../Log.h"

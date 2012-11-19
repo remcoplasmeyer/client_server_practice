@@ -20,6 +20,10 @@ local.properties
 /Client Debug
 /Server Debug
 /Server Release
+/Release
+/Client
+/bin
+
 
 # External tool builders
 .externalToolBuilders/
@@ -77,6 +81,12 @@ ipch/
 *.ncb
 *.opensdf
 *.sdf
+*.sln
+*.filters
+*.suo
+*.vcxproj
+*.user
+
 
 # Visual Studio profiler
 *.psess

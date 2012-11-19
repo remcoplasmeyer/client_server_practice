@@ -101,18 +101,19 @@ Packet Client::receivePacket() {
 						player->sequence = basePacket.sequence;
 						if(playerMovePacket.playerid == this->clientPlayerID) {
 							//received packet of own player
-							//todo: figure out good number her
-							int maxDiffer = 20;
+							//todo: figure out good number here or handle better
+							int maxDiffer = 30;
 							if(abs(player->x-playerMovePacket.x) > maxDiffer || abs(player->y-playerMovePacket.y) > maxDiffer) {
+								FILE_LOG(logDEBUG) << "snapping";
 								player->x = playerMovePacket.x;
 								player->y = playerMovePacket.y;
 								player->velx = playerMovePacket.velx;
-								player->vely = playerMovePacket.vely;
+								player->vely = playerMovePacket.vely; 
 							}
 
 						} else {
 							//received packet of other player
-							/*
+							/* INTERPOLATION INSTEAD OF EXTRAPOLATION
 							FILE_LOG(logDEBUG) << "ITNERPOLATING:" << playerMovePacket.x;
 							player->interpolateX = playerMovePacket.x;
 							player->interpolateY = playerMovePacket.y;
@@ -186,7 +187,8 @@ void Client::sendPacket(Packet *packet) {
 }
 
 void Client::setBasePacket() {
-	this->basePacket = { this->settings.prot, this->sequence, 1, this->clientPlayerID };
+	basePacketStruct basePacketPtr = { this->settings.prot, this->sequence, 1, this->clientPlayerID };
+	this->basePacket = basePacketPtr;
 }
 
 //this function handles all the input, in every state

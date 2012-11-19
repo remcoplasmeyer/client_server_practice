@@ -7,6 +7,7 @@
 
 #include "Particle.h"
 #include "../Log.h"
+#include <windows.h>
 #include <GL/glu.h>
 #include "GUI.h"
 #include "Effect.h"
