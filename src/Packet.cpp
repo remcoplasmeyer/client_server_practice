@@ -50,7 +50,18 @@ sf::Packet& operator >>(sf::Packet& packet, inputPacketStruct& m) {
 sf::Packet& operator <<(sf::Packet& packet, const inputPacketStruct& m) {
 	return packet << m.jump << m.direction;
 }
-
+sf::Packet& operator >>(sf::Packet& packet, requestPlayerPacketStruct& m) {
+	return packet >> m.playerID;
+}
+sf::Packet& operator <<(sf::Packet& packet, const requestPlayerPacketStruct& m) {
+	return packet << m.playerID;
+}
+sf::Packet& operator >>(sf::Packet& packet, newPlayerPacketStruct& m) {
+	return packet >> m.name >> m.playerID;
+}
+sf::Packet& operator <<(sf::Packet& packet, const newPlayerPacketStruct& m) {
+	return packet << m.name << m.playerID;
+}
 
 
 
@@ -106,6 +117,18 @@ Packet::Packet(playerMoveStruct packet, basePacketStruct basePacket) {
 	setSendingPacket();
 }
 
+Packet::Packet(requestPlayerPacketStruct packet, basePacketStruct basePacket) {
+	this->basePacket = basePacket;
+	this->requestPlayerPacket = packet;
+	packetType = REQUESTPLAYERPACKET;
+	setSendingPacket();
+}
+Packet::Packet(newPlayerPacketStruct packet, basePacketStruct basePacket) {
+	this->basePacket = basePacket;
+	this->newPlayerPacket = packet;
+	packetType = NEWPLAYERPACKET;
+	setSendingPacket();
+}
 
 void Packet::setSendingPacket() {
 	sendingPacket << packetType;
@@ -128,6 +151,12 @@ void Packet::setSendingPacket() {
 		break;
 	case PLAYERMOVEPACKET:
 		sendingPacket << playerMovePacket;
+		break;
+	case REQUESTPLAYERPACKET:
+		sendingPacket << requestPlayerPacket;
+		break;
+	case NEWPLAYERPACKET:
+		sendingPacket << newPlayerPacket;
 		break;
 	}
 }

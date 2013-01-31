@@ -56,6 +56,16 @@ struct newPlayerInitStruct {
 	sf::Uint16 playerID;
 };
 
+//packet used to request info of unkown player
+struct requestPlayerPacketStruct {
+	sf::Uint16 playerID;
+};
+
+struct newPlayerPacketStruct {
+	std::string name;
+	sf::Uint16 playerID;
+};
+
 struct movePacketStruct {
 	std::string name;				//only set at receiving client
 };
@@ -90,9 +100,14 @@ sf::Packet& operator >>(sf::Packet& packet, playerMoveStruct& m);
 sf::Packet& operator <<(sf::Packet& packet, const playerMoveStruct& m);
 sf::Packet& operator >>(sf::Packet& packet, inputPacketStruct& m);
 sf::Packet& operator <<(sf::Packet& packet, const inputPacketStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, requestPlayerPacketStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const requestPlayerPacketStruct& m);
+sf::Packet& operator >>(sf::Packet& packet, newPlayerPacketStruct& m);
+sf::Packet& operator <<(sf::Packet& packet, const newPlayerPacketStruct& m);
 
 enum packetType {
-	CONNECTPACKET, NEWPLAYERINITPACKET, CHATPACKET, MOVEPACKET, STATEPACKET, SERVERMESSAGEPACKET, PLAYERINPUTPACKET, PLAYERMOVEPACKET //different types of effects
+	CONNECTPACKET, NEWPLAYERINITPACKET, CHATPACKET, MOVEPACKET, STATEPACKET, SERVERMESSAGEPACKET, 
+	PLAYERINPUTPACKET, PLAYERMOVEPACKET, REQUESTPLAYERPACKET, NEWPLAYERPACKET //different types of packets
 };
 
 class Packet {
@@ -107,6 +122,8 @@ public:
 	serverMessageStruct serverMessage;
 	newPlayerInitStruct newPlayer;
 	inputPacketStruct inputPacket;
+	requestPlayerPacketStruct requestPlayerPacket;
+	newPlayerPacketStruct newPlayerPacket;
 
 	playerMoveStruct playerMovePacket;
 
@@ -120,6 +137,8 @@ public:
 	Packet(newPlayerInitStruct packet, basePacketStruct basePacket);
 	Packet(inputPacketStruct packet, basePacketStruct basePacket);
 	Packet(playerMoveStruct packet, basePacketStruct basePacket);
+	Packet(requestPlayerPacketStruct packet, basePacketStruct basePacket);
+	Packet(newPlayerPacketStruct packet, basePacketStruct basePacket);
 //	Packet(struct movePacketStruct);
 //	Packet(struct statePacketStruct);
 

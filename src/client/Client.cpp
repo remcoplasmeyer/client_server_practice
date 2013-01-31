@@ -28,9 +28,16 @@ Client::Client() {
 
 	clientSocket.bind(sf::Socket::AnyPort);
 	this->settings.clientPort = clientSocket.getLocalPort();
+	FILE_LOG(logDEBUG) << "PORT: " << this->settings.clientPort;
 	clientSocket.setBlocking(false);
 	//HARDCODED STUFF TODO: INIT THESE VIA GUI/SETTINGS/SERVER/WHATEVER
-	sf::IpAddress serverIPHolder("127.0.0.1");			//hardcoded for now
+	std::string hardCodedIP = "83.82.82.41";
+	//sf::IpAddress serverIPHolder;
+	if(hardCodedIP == publicIP.toString()) {
+		this->serverIPHolder = sf::IpAddress(hardCodedIP);			//hardcoded for now
+	} else {
+		this->serverIPHolder = sf::IpAddress("127.0.0.1");
+	}
 	serverIP = &serverIPHolder;
 
 	state = INGAME;
@@ -70,6 +77,14 @@ Packet Client::receivePacket() {
 			returnPacket = Packet(connectPacket, basePacket);
 		}
 			break;
+		case NEWPLAYERPACKET:
+		{
+			newPlayerPacketStruct newPlayer;
+			receivingPacket >> newPlayer;
+			World *worldptr = &world;
+			world.addPlayer(Player(newPlayer.name, *this->serverIP, newPlayer.playerID, worldptr));
+			break;
+		}
 		case NEWPLAYERINITPACKET:
 		{
 			FILE_LOG(logDEBUG) << "new player";
@@ -102,9 +117,8 @@ Packet Client::receivePacket() {
 						if(playerMovePacket.playerid == this->clientPlayerID) {
 							//received packet of own player
 							//todo: figure out good number here or handle better
-							int maxDiffer = 30;
+							int maxDiffer = 2;
 							if(abs(player->x-playerMovePacket.x) > maxDiffer || abs(player->y-playerMovePacket.y) > maxDiffer) {
-								FILE_LOG(logDEBUG) << "snapping";
 								player->x = playerMovePacket.x;
 								player->y = playerMovePacket.y;
 								player->velx = playerMovePacket.velx;
@@ -124,7 +138,7 @@ Packet Client::receivePacket() {
 								player->vely = playerMovePacket.vely;
 							}
 							*/
-							int maxDiffer = 20;
+							int maxDiffer = 2;
 							FILE_LOG(logDEBUG) << player->x;
 							FILE_LOG(logDEBUG) << playerMovePacket.x;
 							if(abs(player->x-playerMovePacket.x) > maxDiffer || abs(player->y-playerMovePacket.y) > maxDiffer) {
@@ -139,7 +153,11 @@ Packet Client::receivePacket() {
 						}
 					}
 				} else {
-					//add player or something?
+					//request player info
+					FILE_LOG(logDEBUG) << "asking for new player info";
+					requestPlayerPacketStruct requestPacket = { playerMovePacket.playerid };
+					Packet packet(requestPacket, this->basePacket);
+					sendPacket(&packet);
 				}
 			} else {
 				FILE_LOG(logDEBUG) << "something went wrong with the packet translation";

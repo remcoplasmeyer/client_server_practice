@@ -19,6 +19,7 @@ public:
 
 	sf::IpAddress clientIP;
 	sf::UdpSocket clientSocket;
+	sf::IpAddress serverIPHolder;
 	sf::IpAddress* serverIP;
 	short unsigned int serverPort;
 	GUI *gui;
