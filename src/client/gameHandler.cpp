@@ -1,4 +1,4 @@
-#include "guiHandler.h"
+#include "gameHandler.h"
 
 namespace CLIENT {
 

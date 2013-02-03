@@ -1,42 +1,30 @@
-/*
- * Server.h
- *
- *  Created on: Oct 8, 2012
- *      Author: Remco
- */
+#ifndef SERVER_Server_h
+#define SERVER_Server_h
 
+namespace SERVER {
+class serverSettings;
+} /* End of namespace SERVER */
+class World;
+namespace SERVER {
+class packetsHandler;
+} /* End of namespace SERVER */
 
-#ifndef SERVER_H_
-#define SERVER_H_
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Network.hpp>
-#include <vector>
-#include <map>
-#include "packetSender.h"
-#include "../Player.h"
-#include "../World.h"
+namespace SERVER {
 
 class Server {
-public:
-	typedef std::map<std::string, Player> playerMap;
-	playerMap players;								//map of players, key of the map is the ip address of the player
 
-	World currentWorld;
-	packetSender packetsender;
-
-	sf::IpAddress serverIP;
-	short unsigned int serverPort;
-	short unsigned int clientPort;
-	sf::UdpSocket serverSocket;
-
-	//basePacket
-	sf::Uint16 prot;				//current protocol number
-	sf::Uint32 sequence;			//this is the sequence number of our server/packet
+ public:
 
 	Server();
-	virtual ~Server();
-	sf::IpAddress getIP();
+	void tick();
+
+ public:
+
+    serverSettings *settings;
+    World *currentWorld;
+    packetsHandler *packethandler;
 };
 
-#endif /* SERVER_H_ */
+} /* End of namespace SERVER */
+
+#endif // SERVER_Server_h

@@ -1,52 +1,33 @@
-/*
- * Client.h
- *
- *  Created on: Oct 8, 2012
- *      Author: Remco
- */
-#ifndef CLIENT_H_
-#define CLIENT_H_
-#include <SFML/Network.hpp>
-#include <string>
-#include "../World.h"
-#include "Settings.h"
-#include "GUI.h"
-#include "../Packet.h"
+#ifndef CLIENT_Client_h
+#define CLIENT_Client_h
+
+namespace CLIENT {
+class guiHandler;
+class inputHandler;
+class gameHandler;
+class viewHandler;
+class clientSettings;
+} /* End of namespace CLIENT */
+
+namespace CLIENT {
 
 class Client {
-public:
-	int state;	enum clientState { INITLOAD, INGAME, CONNECTING };		//client state
 
-	sf::IpAddress clientIP;
-	sf::UdpSocket clientSocket;
-	sf::IpAddress serverIPHolder;
-	sf::IpAddress* serverIP;
-	short unsigned int serverPort;
-	GUI *gui;
-	World world;
-	int clientPlayerID;					//id of the player this client controls
-	Settings settings;
-	bool connected;						//currently connected to server
-
-	sf::Uint32 sequence;				//current sequence nr
+ public:
 
 	Client();
-	virtual ~Client();
+    void tick();
 
-	void getInputAndTick();
+ public:
 
-	void setGUI(GUI *gui);
-	void sendPacket(Packet *packet);
-	void getServerPackets();
-	basePacketStruct basePacket;
-	void setBasePacket();
+    guiHandler *guiHandler;
+    inputHandler *inputHandler;
+    gameHandler *gameHandler;
 
-	void sendInput();
-	void connectServer(sf::IpAddress);
-	Packet receivePacket();
+    viewHandler *view;
+    clientSettings *myclientSettings;
 };
 
-//bunch of functions that we use multiple times
-int generate_random_number(int min, int max);
+} /* End of namespace CLIENT */
 
-#endif /* CLIENT_H_ */
+#endif // CLIENT_Client_h

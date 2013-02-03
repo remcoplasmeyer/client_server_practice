@@ -1,4 +1,4 @@
-#include "guiHandler.h"
+#include "clientSettings.h"
 
 namespace CLIENT {
 

@@ -1,0 +1,13 @@
+#ifndef CLIENT_packetSender_h
+#define CLIENT_packetSender_h
+
+
+namespace CLIENT {
+
+class packetSender {
+
+};
+
+} /* End of namespace CLIENT */
+
+#endif // CLIENT_packetSender_h

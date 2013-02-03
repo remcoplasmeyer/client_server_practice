@@ -1,4 +1,4 @@
-#include "guiHandler.h"
+#include "resourceLoader.h"
 
 namespace CLIENT {
 

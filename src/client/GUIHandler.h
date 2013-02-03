@@ -1,32 +1,28 @@
-/*
- * GUI.h
- *
- *  Created on: Oct 10, 2012
- *      Author: Remco
- */
-#pragma once
-#ifndef GUIHANDLER_H_
-#define GUIHANDLER_H_
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include "SFGUI\SFGUI.hpp"
-#include "SFGUI\Window.hpp"
-#include "GUIChat.h"
+#ifndef CLIENT_guiHandler_h
+#define CLIENT_guiHandler_h
 
-class GUI;					//we don't include Client.h in the header file to prevent infinite recursion
+#include <vector>
 
-class GUIHandler {
-public:
-	GUI *gui;
-	GUIChat guiChat;
 
-	GUIHandler() { };
-	GUIHandler(GUI *_gui);
-	~GUIHandler();
-	void update();
+namespace CLIENT {
+namespace GUI {
+class guiEntity;
+} /* End of namespace CLIENT::GUI */
+} /* End of namespace CLIENT */
 
-private:
-	void init();
+namespace CLIENT {
+
+class guiHandler {
+
+ public:
+
+
+    /**
+     * @element-type guiEntity
+     */
+    std::vector< GUI::guiEntity* > guiEntities;
 };
 
-#endif /* GUIHANDLER_H_ */
+} /* End of namespace CLIENT */
+
+#endif // CLIENT_guiHandler_h
