@@ -9,7 +9,11 @@ class serverSettings {
  public:
     std::string name;
     std::string password;
+	int port;
+	int maxPlayers;
+	int fps;
 
+	serverSettings();
 };
 
 } /* End of namespace SERVER */
