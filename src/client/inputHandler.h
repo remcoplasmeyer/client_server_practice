@@ -1,5 +1,7 @@
 #ifndef CLIENT_inputHandler_h
 #define CLIENT_inputHandler_h
+#include "netHandler.h"
+#include "controlHandler.h"
 
 namespace CLIENT {
 class netHandler;
@@ -10,18 +12,13 @@ namespace CLIENT {
 
 class inputHandler {
 
- public:
+public:
+	inputHandler();
 
+	void sendTestPacket();
 
-    /**
-     * @element-type netHandler
-     */
-    netHandler *nethandler;
-
-    /**
-     * @element-type controlHandler
-     */
-    controlHandler *controlhandler;
+	CLIENT::netHandler nethandler;
+	CLIENT::controlHandler controlhandler;
 };
 
 } /* End of namespace CLIENT */

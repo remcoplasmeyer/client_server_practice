@@ -6,6 +6,9 @@ namespace CLIENT {
 
 class packetSender {
 
+public:
+	CLIENT::packetSender();
+	//send(somethinglol);
 };
 
 } /* End of namespace CLIENT */

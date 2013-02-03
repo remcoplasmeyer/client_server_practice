@@ -6,6 +6,7 @@
 #include "RakPeerInterface.h"
 #include "GetTime.h"
 #include "BitStream.h"
+#include "MessageIdentifiers.h"
 
 
 
@@ -56,7 +57,23 @@ void Server::setupConnection() {
 
 //this is all called every 1000/settings.fps milliseconds - server loop
 void Server::tick() {
-	
+	RakNet::Packet *packet = peer->Receive();
+	//receive aaaalll the packets
+	while(packet) {
+		switch (packet->data[0])
+		{
+				case ID_CONNECTION_LOST:
+					break;
+				case ID_DISCONNECTION_NOTIFICATION:
+					break;
+				case ID_NEW_INCOMING_CONNECTION:
+					FILE_LOG(logINFO) << "NEW CONNECTION: " << packet->systemAddress.ToString();
+					break;
+		}
+		//remove packet, get next one
+		peer->DeallocatePacket(packet);
+		packet = peer->Receive();
+	}
 }
 
 Server::~Server() {

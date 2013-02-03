@@ -2,5 +2,8 @@
 
 namespace CLIENT {
 
+	CLIENT::packetSender::packetSender() {
+
+	}
 
 } /* End of namespace CLIENT */

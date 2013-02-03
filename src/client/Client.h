@@ -1,5 +1,6 @@
 #ifndef CLIENT_Client_h
 #define CLIENT_Client_h
+#include "inputHandler.h"
 
 namespace CLIENT {
 class guiHandler;
@@ -17,15 +18,18 @@ class Client {
 
 	Client();
     void tick();
+	void initHandlers();
+
+	void sendTestPacket();		//for debugging purposes
 
  public:
 
-    guiHandler *guiHandler;
-    inputHandler *inputHandler;
-    gameHandler *gameHandler;
+    //guiHandler guiHandler;
+    CLIENT::inputHandler inputHandler;
+    //gameHandler gameHandler;
 
-    viewHandler *view;
-    clientSettings *myclientSettings;
+    //viewHandler view;
+    //clientSettings myclientSettings;
 };
 
 } /* End of namespace CLIENT */
