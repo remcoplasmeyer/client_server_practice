@@ -4,6 +4,7 @@
 #include "RakPeerInterface.h"
 #include "serverSettings.h"
 #include <SFML\Network.hpp>
+#include "../World.h"
 
 namespace SERVER {
 class serverSettings;
@@ -25,10 +26,13 @@ public:
 	long sequence;						//nr of loops we've been through
 	sf::IpAddress serverIP;
 
+	World currentWorld;
+
 	Server();
 	~Server();
 	void setupConnection();
 	void tick();
+	void initWorld();
 
 public:
 	SERVER::serverSettings settings;

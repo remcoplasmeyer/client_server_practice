@@ -7,6 +7,8 @@ class worldSettings {
  public:
     int velocityMoving;
 
+	worldSettings();
+
 };
 
 #endif // worldSettings_h

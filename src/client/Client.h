@@ -1,6 +1,7 @@
 #ifndef CLIENT_Client_h
 #define CLIENT_Client_h
 #include "inputHandler.h"
+#include "clientSettings.h"
 
 namespace CLIENT {
 class guiHandler;
@@ -14,7 +15,9 @@ namespace CLIENT {
 
 class Client {
 
- public:
+public:
+	RakNet::TimeMS currentTime;
+	RakNet::TimeMS lastUpdatedTime;
 
 	Client();
     void tick();
@@ -29,7 +32,7 @@ class Client {
     //gameHandler gameHandler;
 
     //viewHandler view;
-    //clientSettings myclientSettings;
+    CLIENT::clientSettings settings;
 };
 
 } /* End of namespace CLIENT */

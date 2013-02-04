@@ -1,6 +1,10 @@
 #include "Client.h"
 #include "../Log.h"
 #include "inputHandler.h"
+#include "clientSettings.h"
+#include "GetTime.h"
+
+#include <windows.h>
 
 int main() {
 	CLIENT::Client client;
@@ -13,12 +17,41 @@ namespace CLIENT {
 Client::Client() {
 	initHandlers();
 	FILE_LOG(logINFO) << "Client opened";
-	while(true) {
 
+	lastUpdatedTime = RakNet::GetTimeMS();
+
+    float t = 0.0f;
+	float dt = 1/(1000/settings.fps);
+	
+	RakNet::Time currentTime = RakNet::GetTimeMS();
+	float accumulator = 0.0f;
+	
+	while (true) 
+	{			
+		RakNet::Time newTime = RakNet::GetTimeMS();
+		float deltaTime = newTime - currentTime;
+		currentTime = newTime;
+		
+		if (deltaTime>0.25f)
+			deltaTime = 0.25f;
+		
+		accumulator += deltaTime;
+		
+		while (accumulator>=dt)
+		{
+			accumulator -= dt;
+			//previous = current;			TODO: IMPLEMENT STATES
+			//integrate(current, t, dt);	TODO: integrate here
+			t += dt;
+		}
+		
+		//State state = interpolate(previous, current, accumulator/dt);		TODO: INTERPOLATE HERE, ETC
+		
 	}
 }
 
 void Client::initHandlers() {
+	settings = CLIENT::clientSettings();
 	inputHandler = CLIENT::inputHandler();				//handles user & network input
 	inputHandler.nethandler.connect("127.0.0.1", 1234);
 
@@ -26,7 +59,6 @@ void Client::initHandlers() {
     //gameHandler *gameHandler;
 
     //viewHandler *view;
-    //clientSettings *myclientSettings;
 }
 
 void Client::tick()

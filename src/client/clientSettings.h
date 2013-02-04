@@ -6,6 +6,10 @@ namespace CLIENT {
 
 class clientSettings {
 
+public:
+	int fps;
+
+	clientSettings();
 };
 
 } /* End of namespace CLIENT */

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include "MapLoader.h"
+#include "worldSettings.h"
 
 
 class MapLoader;
@@ -15,11 +17,11 @@ class World {
 
  public:
 
+	World();
     void tick();
-
     void restartWorld();
-
     void setMap(std::string mapName);
+	void initTestWorld();
 
  public:
     std::string currentMap;
@@ -28,26 +30,12 @@ class World {
 
  public:
 
-    MapLoader *mapLoader;
+    MapLoader mapLoader;
+    worldSettings worldsettings;								//settings of the current world
 
-
-
-    worldSettings *worldsettings;
-
-    /**
-     * @element-type Player
-     */
-    std::vector< Player* > players;
-
-    /**
-     * @element-type mapTile
-     */
-    std::vector< mapTile* > maptiles;
-
-    /**
-     * @element-type specialMapTiles
-     */
-    std::vector< specialMapTiles* > specialMaptiles;
+    std::vector< Player* > players;								//holds all the current playing characters
+    std::vector< mapTile* > maptiles;							//holds all the immovable maptiles
+    //std::vector< specialMapTiles* > specialMaptiles;			TODO: implement special tiles, someday
 };
 
 #endif // World_h

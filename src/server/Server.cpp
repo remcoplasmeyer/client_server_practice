@@ -1,5 +1,6 @@
 #include "Server.h"
 #include "serverSettings.h"
+#include "../World.h"
 #include "../Log.h"
 
 #include <SFML\Network.hpp>
@@ -23,6 +24,7 @@ Server::Server() {
 	this->settings = SERVER::serverSettings();			//initializes settings of the server
 	
 	setupConnection();
+	initWorld();
 
 	int wantedFrameTime = 1000/settings.fps;			//time of each tick, in ms
 	sequence = 0;
@@ -41,6 +43,9 @@ Server::Server() {
 	}
 }
 
+void Server::initWorld() {
+	currentWorld = World();
+}
 
 //setup the connection with RakNet
 void Server::setupConnection() {
@@ -63,6 +68,7 @@ void Server::tick() {
 		switch (packet->data[0])
 		{
 				case ID_CONNECTION_LOST:
+					FILE_LOG(logINFO) << "CONNECTION LOST SOMEWHERE?";
 					break;
 				case ID_DISCONNECTION_NOTIFICATION:
 					break;
