@@ -5,6 +5,7 @@
 #include <string>
 #include "MapLoader.h"
 #include "worldSettings.h"
+#include <string>
 
 
 class MapLoader;
@@ -24,9 +25,10 @@ class World {
 	void initTestWorld();
 
  public:
-    std::string currentMap;
-    int width;
-    int height;
+	//map settings		-		WE BEGIN ALL MAP VALUES WITH THE PREFIX map*
+	std::string mapName, mapBackground;
+	int mapWidth, mapHeight;
+	//end map settings
 
  public:
 
