@@ -1,6 +1,9 @@
 #include "MapLoader.h"
+#include "mapTile.h"
 #include "World.h"
+#include "location.h"
 #include <string>
+#include <list>
 #include <sstream>
 #include <fstream>
 #include <boost/property_tree/ptree.hpp>
@@ -16,6 +19,7 @@ MapLoader::MapLoader() {
 }
 
 MapLoader::MapLoader(World *_world) {
+	this->mapBaseDir = "data/maps/";
 	this->world = _world;
 }
 
@@ -23,7 +27,7 @@ void MapLoader::loadMap(std::string mapName)
 {
 	try {
 		std::stringstream localStream;
-		std::string mapLocation = "data/maps/" + mapName + ".map";
+		std::string mapLocation = this->mapBaseDir + mapName + ".map";
 		std::ifstream t(mapLocation.c_str());
 		localStream << t.rdbuf();
 
@@ -35,36 +39,34 @@ void MapLoader::loadMap(std::string mapName)
 		this->world->mapWidth = pt.get<int>("map.width");
 		this->world->mapHeight = pt.get<int>("map.height");
 
+		std::vector<std::vector<mapTile>> tiles;
 
+		//create vector for every row for the 2d tile array
 		for(int i = 0; i < world->mapWidth;i++) {
-			//create vector for every row for the 2d tile array
-			//std::vector<Tile> tileVector;
-			//this->tiles.push_back(tileVector);
-			//for(int j=0; j < mapHeight;j++) {
-			//	Tile tile(0,0,0,0,i,j);
-			//	this->tiles.at(i).push_back(tile);
-			//}
+			std::vector<mapTile> tileVector;
+			tiles.push_back(tileVector);
+			for(int j=0; j < world->mapHeight;j++) {
+				mapTile tile(0,0,0,"");
+				tiles.at(i).push_back(tile);
+			}
 		}
-		//get AAAALLL the tiles
+		//get AAAALLL the tiles - and put them in the 2d tiles array
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.tiles")) {
-			/*
 			assert(v.first.empty());
 			int y = v.second.get<int>("y");
 			int x = v.second.get<int>("x");
 			int type = v.second.get<int>("t");
-			int visual = v.second.get<int>("v");
-			int textureX = v.second.get<int>("vx");
-			int textureY = v.second.get<int>("vy");
-			std::vector<Tile> *yVec = &tiles[x];
-			yVec->insert(yVec->begin() + y, Tile(type,visual,textureX, textureY, x, y));
-			*/
+			std::string visual = v.second.get<std::string>("i");
+			std::vector<mapTile> *yVec = &tiles[x];
+			yVec->insert(yVec->begin() + y, mapTile(x, y, type, visual));
 		}
-		//get AAAALLL the spawn points
+		//get AAAALLL the spawn points 
+		std::list<location> spawnpoints;
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.playerspawns")) {
-			/*
-			tileCoord playerSpawnPoint = { v.second.get<int>("x"), v.second.get<int>("y") };
-			this->playerSpawns.push_back(playerSpawnPoint);
-			*/
+			int x = v.second.get<int>("x");
+			int y = v.second.get<int>("y");
+			location loc = {x,y};
+			spawnpoints.push_back(loc);
 		}
 	} catch (std::exception const& e) {
 		std::cerr << e.what() << std::endl;

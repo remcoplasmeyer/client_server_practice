@@ -12,6 +12,7 @@ public:
 	void loadMap(std::string mapName);
 
 private:
+	std::string mapBaseDir;
 	World *world;
 };
 
