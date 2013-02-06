@@ -1,5 +1,13 @@
 <h1>DEVBLOG IN SHORT</h1>
+<b>04/02/2013 -> 06/02/2013</b>
 
+* [resourceLoader] working
+* [mapLoader] working
+
+TODO NEXT ITERATION:
+
+* Pass map to server from client
+* Get map on screen
 
 <b>03/02/2013 -> 04/02/2013</b>
 
