@@ -1,10 +1,12 @@
 #ifndef World_h
 #define World_h
 
-#include <vector>
-#include <string>
+#include "location.h"
 #include "MapLoader.h"
 #include "worldSettings.h"
+#include "mapTile.h"
+#include <vector>
+#include <list>
 #include <string>
 
 
@@ -25,19 +27,17 @@ class World {
 	void initTestWorld();
 
  public:
-	//map settings		-		WE BEGIN ALL MAP VALUES WITH THE PREFIX map*
 	std::string mapName, mapBackground;
 	int mapWidth, mapHeight;
-	//end map settings
 
- public:
-
-    MapLoader mapLoader;
+	MapLoader mapLoader;
     worldSettings worldsettings;								//settings of the current world
 
+	std::list<location> spawnPoints;							//contains all spawnpoints
+	std::vector<std::vector<mapTile>> mapTiles;					//holds all the immovable maptiles in a 2D vector
+	//std::vector< specialMapTiles* > specialMaptiles;			TODO: implement special tiles, someday
+
     std::vector< Player* > players;								//holds all the current playing characters
-    std::vector< mapTile* > maptiles;							//holds all the immovable maptiles
-    //std::vector< specialMapTiles* > specialMaptiles;			TODO: implement special tiles, someday
 };
 
 #endif // World_h

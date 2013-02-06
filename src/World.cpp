@@ -1,4 +1,5 @@
 #include "World.h"
+#include "Log.h"
 #include "MapLoader.h"
 
 
@@ -24,5 +25,8 @@ void World::restartWorld()
 //sets map to mapName, through [mapLoader]
 void World::setMap(std::string mapName)
 {
+	FILE_LOG(logDEBUG) << "Trying to load map: " << mapName;
+	mapLoader.loadMap(mapName);
+	FILE_LOG(logDEBUG) << "Should be done loading map...";
 }
 

@@ -1,0 +1,161 @@
+﻿Build started 2/5/2013 9:53:28 PM.
+     1>Project "C:\Users\Remco\cppworkspace\client_server_practice\client_server_practice.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Release\interm\Server.unsuccessfulbuild".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\Remco\cppworkspace\libs\boost /IC:\Users\Remco\cppworkspace\libs\raknet\Source /IC:\Users\Remco\cppworkspace\libs\raknet\Source /IC:\Users\Remco\cppworkspace\libs\sfmlvc\include /Zi /nologo /W3 /WX- /O2 /Oy- /D _WINSOCKAPI_ /D SFML_DYNAMIC /D WIN32 /D NDEBUG /D _CONSOLE /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\interm\\" /Fd"Release\interm\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\MapLoader.cpp src\SERVER\Server.cpp src\World.cpp
+         MapLoader.cpp
+     1>c:\users\remco\cppworkspace\client_server_practice\src\Log.h(150): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
+         Server.cpp
+     1>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\include\WinSock2.h(29): warning C4005: '_WINSOCKAPI_' : macro redefinition
+                 command-line arguments :  see previous definition of '_WINSOCKAPI_'
+     1>c:\users\remco\cppworkspace\client_server_practice\src\server\../Log.h(150): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
+     1>src\SERVER\Server.cpp(37): warning C4018: '>=' : signed/unsigned mismatch
+         World.cpp
+     1>c:\users\remco\cppworkspace\client_server_practice\src\Log.h(150): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
+         Generating Code...
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Remco\cppworkspace\client_server_practice\Release\Server.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\Remco\cppworkspace\libs\sfmlvc\lib opengl32.lib "sfml-system.lib" "sfml-network.lib" "sfml-graphics.lib" "sfml-window.lib" "sfml-audio.lib" ws2_32.lib /MANIFEST /ManifestFile:"Release\interm\Server.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Remco\cppworkspace\client_server_practice\Release\Server.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Remco\cppworkspace\client_server_practice\Release\Server.lib" /MACHINE:X86 Release\interm\Server.exe.embed.manifest.res
+         Release\interm\Base64Encoder.obj
+         Release\interm\BitStream.obj
+         Release\interm\CCRakNetSlidingWindow.obj
+         Release\interm\CCRakNetUDT.obj
+         Release\interm\CheckSum.obj
+         Release\interm\CloudClient.obj
+         Release\interm\CloudCommon.obj
+         Release\interm\CloudServer.obj
+         Release\interm\CommandParserInterface.obj
+         Release\interm\ConnectionGraph2.obj
+         Release\interm\ConsoleServer.obj
+         Release\interm\DataCompressor.obj
+         Release\interm\DirectoryDeltaTransfer.obj
+         Release\interm\DS_BytePool.obj
+         Release\interm\DS_ByteQueue.obj
+         Release\interm\DS_HuffmanEncodingTree.obj
+         Release\interm\DS_Table.obj
+         Release\interm\DynDNS.obj
+         Release\interm\EmailSender.obj
+         Release\interm\EpochTimeToString.obj
+         Release\interm\FileList.obj
+         Release\interm\FileListTransfer.obj
+         Release\interm\FileOperations.obj
+         Release\interm\FormatString.obj
+         Release\interm\FullyConnectedMesh2.obj
+         Release\interm\Getche.obj
+         Release\interm\Gets.obj
+         Release\interm\GetTime.obj
+         Release\interm\gettimeofday.obj
+         Release\interm\GridSectorizer.obj
+         Release\interm\HTTPConnection.obj
+         Release\interm\HTTPConnection2.obj
+         Release\interm\IncrementalReadInterface.obj
+         Release\interm\Itoa.obj
+         Release\interm\LinuxStrings.obj
+         Release\interm\LocklessTypes.obj
+         Release\interm\LogCommandParser.obj
+         Release\interm\MessageFilter.obj
+         Release\interm\NatPunchthroughClient.obj
+         Release\interm\NatPunchthroughServer.obj
+         Release\interm\NatTypeDetectionClient.obj
+         Release\interm\NatTypeDetectionCommon.obj
+         Release\interm\NatTypeDetectionServer.obj
+         Release\interm\NetworkIDManager.obj
+         Release\interm\NetworkIDObject.obj
+         Release\interm\PacketConsoleLogger.obj
+         Release\interm\PacketFileLogger.obj
+         Release\interm\PacketizedTCP.obj
+         Release\interm\PacketLogger.obj
+         Release\interm\PacketOutputWindowLogger.obj
+         Release\interm\PluginInterface2.obj
+         Release\interm\Rackspace.obj
+         Release\interm\RakMemoryOverride.obj
+         Release\interm\RakNetCommandParser.obj
+         Release\interm\RakNetSocket.obj
+         Release\interm\RakNetSocket2.obj
+         Release\interm\RakNetSocket2_360_720.obj
+         Release\interm\RakNetSocket2_Berkley.obj
+         Release\interm\RakNetSocket2_Berkley_NativeClient.obj
+         Release\interm\RakNetSocket2_NativeClient.obj
+         Release\interm\RakNetSocket2_PS3_PS4.obj
+         Release\interm\RakNetSocket2_Vita.obj
+         Release\interm\RakNetSocket2_WindowsStore8.obj
+         Release\interm\RakNetSocket2_Windows_Linux.obj
+         Release\interm\RakNetSocket2_Windows_Linux_360.obj
+         Release\interm\RakNetStatistics.obj
+         Release\interm\RakNetTransport2.obj
+         Release\interm\RakNetTypes.obj
+         Release\interm\RakPeer.obj
+         Release\interm\RakSleep.obj
+         Release\interm\RakString.obj
+         Release\interm\RakThread.obj
+         Release\interm\RakWString.obj
+         Release\interm\Rand.obj
+         Release\interm\ReadyEvent.obj
+         Release\interm\RelayPlugin.obj
+         Release\interm\ReliabilityLayer.obj
+         Release\interm\ReplicaManager3.obj
+         Release\interm\Router2.obj
+         Release\interm\RPC4Plugin.obj
+         Release\interm\SecureHandshake.obj
+         Release\interm\SendToThread.obj
+         Release\interm\SHA1.obj
+         Release\interm\SignaledEvent.obj
+         Release\interm\SimpleMutex.obj
+         Release\interm\SocketLayer.obj
+         Release\interm\StatisticsHistory.obj
+         Release\interm\StringCompressor.obj
+         Release\interm\StringTable.obj
+         Release\interm\SuperFastHash.obj
+         Release\interm\TableSerializer.obj
+         Release\interm\TCPInterface.obj
+         Release\interm\TeamBalancer.obj
+         Release\interm\TeamManager.obj
+         Release\interm\TelnetTransport.obj
+         Release\interm\ThreadsafePacketLogger.obj
+         Release\interm\TwoWayAuthentication.obj
+         Release\interm\UDPForwarder.obj
+         Release\interm\UDPProxyClient.obj
+         Release\interm\UDPProxyCoordinator.obj
+         Release\interm\UDPProxyServer.obj
+         Release\interm\VariableDeltaSerializer.obj
+         Release\interm\VariableListDeltaTracker.obj
+         Release\interm\VariadicSQLParser.obj
+         Release\interm\VitaIncludes.obj
+         Release\interm\WSAStartupSingleton.obj
+         Release\interm\_FindFirst.obj
+         Release\interm\MapLoader.obj
+         Release\interm\mapTile.obj
+         Release\interm\Player.obj
+         Release\interm\packetReceiver.obj
+         Release\interm\packetSender.obj
+         Release\interm\packetsHandler.obj
+         Release\interm\Server.obj
+         Release\interm\serverSettings.obj
+         Release\interm\specialMapTiles.obj
+         Release\interm\World.obj
+         Release\interm\worldSettings.obj
+     1>LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+         packetSender.obj : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+     1>LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+     1>LINK : warning LNK4098: defaultlib 'LIBCMTD' conflicts with use of other libs; use /NODEFAULTLIB:library
+         Generating code
+         Finished generating code
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Release\interm\Server.exe.embed.manifest" /manifest Release\interm\Server.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         client_server_practice.vcxproj -> C:\Users\Remco\cppworkspace\client_server_practice\Release\Server.exe
+       FinalizeBuildStatus:
+         Deleting file "Release\interm\Server.unsuccessfulbuild".
+         Touching "Release\interm\Server.lastbuildstate".
+     1>Done Building Project "C:\Users\Remco\cppworkspace\client_server_practice\client_server_practice.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:23.84

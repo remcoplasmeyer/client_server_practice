@@ -11,7 +11,7 @@
 
 /*
 	[netHandler] handles all the network input and output
-	TODO: set isConnected when connected
+	TODO: set isConnected when connectedd
 */
 
 namespace CLIENT {
@@ -19,13 +19,13 @@ namespace CLIENT {
 	CLIENT::netHandler::netHandler() {
 		peer = RakNet::RakPeerInterface::GetInstance();
 		RakNet::SocketDescriptor socketDescriptor;
-		socketDescriptor.port=0;
+		socketDescriptor.port = 0;
 		RakNet::StartupResult b = peer->Startup(1,&socketDescriptor,1);
-		RakAssert(b==RAKNET_STARTED);
+		RakAssert(b == RAKNET_STARTED);
 		isConnected	= false;
 
 		packetsender = CLIENT::packetSender();
-		//packetreceiver = CLIENT::packetReceiver();
+		packetreceiver = CLIENT::packetReceiver();
 	}
 
 	void CLIENT::netHandler::connect(char *remoteIPAddress, unsigned short serverPort) {
@@ -41,7 +41,7 @@ namespace CLIENT {
 	void CLIENT::netHandler::disconnect() {
 		if(isConnected) {
 			peer->CloseConnection(peer->GetSystemAddressFromIndex(0),true,0);
-			isConnected=false;
+			isConnected = false;
 		}
 	}
 

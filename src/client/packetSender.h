@@ -7,7 +7,7 @@ namespace CLIENT {
 class packetSender {
 
 public:
-	CLIENT::packetSender();
+	packetSender();
 	//send(somethinglol);
 };
 

@@ -1,4 +1,5 @@
 #include "MapLoader.h"
+#include "Log.h"
 #include "mapTile.h"
 #include "World.h"
 #include "location.h"
@@ -68,7 +69,10 @@ void MapLoader::loadMap(std::string mapName)
 			location loc = {x,y};
 			spawnpoints.push_back(loc);
 		}
+
+		this->world->mapTiles = tiles;
+		this->world->spawnPoints = spawnpoints;
 	} catch (std::exception const& e) {
-		std::cerr << e.what() << std::endl;
+		FILE_LOG(logERROR) << e.what() << std::endl;
 	}
 }

@@ -5,7 +5,8 @@
 namespace SERVER {
 
 class packetSender {
-
+public:
+	packetSender();
 };
 
 } /* End of namespace SERVER */

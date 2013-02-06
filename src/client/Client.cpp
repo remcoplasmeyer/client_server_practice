@@ -1,3 +1,4 @@
+#include "viewHandler.h"
 #include "Client.h"
 #include "../Log.h"
 #include "inputHandler.h"
@@ -13,6 +14,9 @@ int main() {
 
 namespace CLIENT {
 
+enum CLIENTSTATES {
+	INGAME
+};
 
 Client::Client() {
 	initHandlers();
@@ -51,6 +55,7 @@ Client::Client() {
 }
 
 void Client::initHandlers() {
+	CLIENT::viewHandler view;
 	settings = CLIENT::clientSettings();
 	inputHandler = CLIENT::inputHandler();				//handles user & network input
 	inputHandler.nethandler.connect("127.0.0.1", 1234);
@@ -58,7 +63,6 @@ void Client::initHandlers() {
 	//guiHandler *guiHandler;
     //gameHandler *gameHandler;
 
-    //viewHandler *view;
 }
 
 void Client::tick()

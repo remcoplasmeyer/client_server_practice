@@ -1,37 +1,32 @@
 #ifndef CLIENT_Client_h
 #define CLIENT_Client_h
+#include "viewHandler.h"
 #include "inputHandler.h"
 #include "clientSettings.h"
-
-namespace CLIENT {
-class guiHandler;
-class inputHandler;
-class gameHandler;
-class viewHandler;
-class clientSettings;
-} /* End of namespace CLIENT */
 
 namespace CLIENT {
 
 class Client {
 
 public:
+	int state;
+
 	RakNet::TimeMS currentTime;
 	RakNet::TimeMS lastUpdatedTime;
 
 	Client();
-    void tick();
+	void tick();
 	void initHandlers();
 
 	void sendTestPacket();		//for debugging purposes
 
- public:
+	//HANDLERS
 
     //guiHandler guiHandler;
-    CLIENT::inputHandler inputHandler;
+	inputHandler inputHandler;
+	//viewHandler view;
     //gameHandler gameHandler;
 
-    //viewHandler view;
     CLIENT::clientSettings settings;
 };
 

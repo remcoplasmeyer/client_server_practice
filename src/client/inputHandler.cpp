@@ -1,3 +1,4 @@
+#include "../Log.h"
 #include "inputHandler.h"
 #include "netHandler.h"
 #include "controlHandler.h"

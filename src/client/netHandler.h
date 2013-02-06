@@ -1,14 +1,8 @@
 #ifndef CLIENT_netHandler_h
 #define CLIENT_netHandler_h
 #include "RakPeerInterface.h"
-//
 #include "packetSender.h"
 #include "packetReceiver.h"
-
-namespace CLIENT {
-class packetSender;
-class packetReceiver;
-} /* End of namespace CLIENT */
 
 namespace CLIENT {
 
@@ -19,7 +13,7 @@ public:
 	RakNet::RakPeerInterface *peer;
 
 	CLIENT::packetSender packetsender;
-    //CLIENT::packetReceiver packetreceiver;
+    CLIENT::packetReceiver packetreceiver;
 
 	void connect(char *remoteIPAddress, unsigned short serverPort);
 	void disconnect();
