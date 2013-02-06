@@ -176,3 +176,9 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+/interm
+/images
+/data
+*.tlog
+*.png
