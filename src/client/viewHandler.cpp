@@ -7,7 +7,7 @@
 namespace CLIENT {
 
 
-	CLIENT::viewHandler::viewHandler(){ 
+	CLIENT::viewHandler::viewHandler() { 
 		FILE_LOG(logDEBUG) << "view created?!";
 	}
 

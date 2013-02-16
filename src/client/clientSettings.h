@@ -8,6 +8,7 @@ class clientSettings {
 
 public:
 	int fps;
+	int windowWidth, windowHeight;
 
 	clientSettings();
 };

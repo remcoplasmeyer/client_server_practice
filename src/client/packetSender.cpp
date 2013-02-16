@@ -2,7 +2,7 @@
 
 namespace CLIENT {
 
-	CLIENT::packetSender::packetSender() {
+	packetSender::packetSender() {
 
 	}
 

@@ -3,6 +3,7 @@
 #include "RakPeerInterface.h"
 #include "packetSender.h"
 #include "packetReceiver.h"
+#include <string>
 
 namespace CLIENT {
 
@@ -11,11 +12,13 @@ class netHandler {
 public:
 	bool isConnected;
 	RakNet::RakPeerInterface *peer;
+	std::string test;
 
-	CLIENT::packetSender packetsender;
-    CLIENT::packetReceiver packetreceiver;
+	//CLIENT::packetSender packetsender;
+	CLIENT::packetReceiver packetreceiver;
 
 	void connect(char *remoteIPAddress, unsigned short serverPort);
+	void receivePackets();
 	void disconnect();
 	netHandler();
 

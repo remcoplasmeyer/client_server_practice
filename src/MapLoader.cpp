@@ -70,6 +70,7 @@ void MapLoader::loadMap(std::string mapName)
 			spawnpoints.push_back(loc);
 		}
 
+		this->mapJSON = localStream.str();
 		this->world->mapTiles = tiles;
 		this->world->spawnPoints = spawnpoints;
 	} catch (std::exception const& e) {

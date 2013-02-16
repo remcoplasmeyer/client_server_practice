@@ -11,9 +11,10 @@ public:
 	MapLoader(World *_world);
 	void loadMap(std::string mapName);
 
+	std::string mapJSON;
 private:
-	std::string mapBaseDir;
 	World *world;
+	std::string mapBaseDir;
 };
 
 #endif // MapLoader_h

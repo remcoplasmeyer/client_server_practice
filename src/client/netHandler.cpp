@@ -17,15 +17,16 @@
 namespace CLIENT {
 
 	CLIENT::netHandler::netHandler() {
-		peer = RakNet::RakPeerInterface::GetInstance();
+		this->peer = RakNet::RakPeerInterface::GetInstance();
 		RakNet::SocketDescriptor socketDescriptor;
 		socketDescriptor.port = 0;
 		RakNet::StartupResult b = peer->Startup(1,&socketDescriptor,1);
 		RakAssert(b == RAKNET_STARTED);
 		isConnected	= false;
-
-		packetsender = CLIENT::packetSender();
-		packetreceiver = CLIENT::packetReceiver();
+		this->test = "tassssdfasdf";
+		
+		packetreceiver = CLIENT::packetReceiver(this);
+		//packetsender = CLIENT::packetSender();
 	}
 
 	void CLIENT::netHandler::connect(char *remoteIPAddress, unsigned short serverPort) {
@@ -36,6 +37,10 @@ namespace CLIENT {
 		{
 			FILE_LOG(logINFO) << "Client wont start connecting?";
 		}
+	}
+
+	void CLIENT::netHandler::receivePackets() {
+		this->packetreceiver.receive();
 	}
 
 	void CLIENT::netHandler::disconnect() {

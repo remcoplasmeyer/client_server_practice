@@ -18,6 +18,8 @@ namespace CLIENT {
 		//we load all the resources here
 		//hardcoded images for now
 		this->backgrounds = std::map<std::string, sf::Texture>();
+		this->mapTextures = std::map<std::string, sf::Texture>();
+		this->playerTextures = std::map<std::string, sf::Texture>();
 
 		backgroundsBasePath = "images/backgrounds/";
 		mapTextureBasePath = "images/tiles/";
@@ -30,18 +32,17 @@ namespace CLIENT {
 		for each (std::string image in backgroundHolder) {
 			loadTextureIntoMap(this->backgroundsBasePath + image, backgrounds);
 		}
-		//for each (std::string image in mapTexturesHolder) {
-		//	loadTextureIntoMap(this->mapTextureBasePath + image, &mapTextures);
-		//}
-		//for each (std::string image in playerTexturesHolder) {
-		//	loadTextureIntoMap(this->playerTexturesBasePath + image, &playerTextures);
-		//}
+		for each (std::string image in mapTexturesHolder) {
+			loadTextureIntoMap(this->mapTextureBasePath + image, mapTextures);
+		}
+		for each (std::string image in playerTexturesHolder) {
+			loadTextureIntoMap(this->playerTexturesBasePath + image, playerTextures);
+		}
 	}
 
 	void resourceLoader::loadTextureIntoMap(std::string imagePath, std::map<std::string, sf::Texture> &texturesMap) {
 		sf::Texture texture;
-		if(texture.loadFromFile("images/backgrounds/testbg.png")) {
-			FILE_LOG(logINFO) << "texture loaded";
+		if(texture.loadFromFile(imagePath)) {
 			texture.setRepeated(true);
 			texturesMap[imagePath] = texture;
 		} else {

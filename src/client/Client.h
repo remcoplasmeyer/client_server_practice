@@ -3,6 +3,7 @@
 #include "viewHandler.h"
 #include "inputHandler.h"
 #include "clientSettings.h"
+#include "netHandler.h"
 
 namespace CLIENT {
 
@@ -24,9 +25,9 @@ public:
 
     //guiHandler guiHandler;
 	inputHandler inputHandler;
-	//viewHandler view;
+	netHandler netHandler;
     //gameHandler gameHandler;
-
+	viewHandler view;
     CLIENT::clientSettings settings;
 };
 

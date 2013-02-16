@@ -5,6 +5,7 @@
 #include "serverSettings.h"
 #include <SFML\Network.hpp>
 #include "../World.h"
+#include "../packetTypes.h"
 
 namespace SERVER {
 class serverSettings;
@@ -25,6 +26,7 @@ public:
 	RakNet::TimeMS currentTime;			//current timestamp
 	long sequence;						//nr of loops we've been through
 	sf::IpAddress serverIP;
+	basePacket basepacket;
 
 	World currentWorld;
 
@@ -33,6 +35,7 @@ public:
 	void setupConnection();
 	void tick();
 	void initWorld();
+	void updateBasePacket();
 
 public:
 	SERVER::serverSettings settings;

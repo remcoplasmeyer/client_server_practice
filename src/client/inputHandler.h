@@ -16,6 +16,7 @@ public:
 	inputHandler();
 
 	void sendTestPacket();
+	void tick();
 
 	CLIENT::netHandler nethandler;
 	CLIENT::controlHandler controlhandler;

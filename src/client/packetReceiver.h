@@ -1,11 +1,18 @@
 #ifndef CLIENT_packetReceiver_h
 #define CLIENT_packetReceiver_h
 
-
 namespace CLIENT {
 
-class packetReceiver {
+class netHandler;
 
+class packetReceiver {
+public:
+	netHandler *nethandler;
+
+	packetReceiver();
+	packetReceiver(netHandler *_nethandler);
+
+	void receive();
 };
 
 } /* End of namespace CLIENT */

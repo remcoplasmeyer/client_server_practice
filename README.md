@@ -1,4 +1,9 @@
 <h1>DEVBLOG IN SHORT</h1>
+
+<b>16/02/2013</b>
+
+* Next time continue at packetReceiver.cpp:20
+
 <b>04/02/2013 -> 06/02/2013</b>
 
 * [resourceLoader] working

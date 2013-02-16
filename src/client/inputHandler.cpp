@@ -11,12 +11,17 @@
 namespace CLIENT {
 
 	CLIENT::inputHandler::inputHandler() {
-		nethandler = CLIENT::netHandler();
+		//nethandler = CLIENT::netHandler();
 		controlhandler = CLIENT::controlHandler();
 	}
 
 	void CLIENT::inputHandler::sendTestPacket() {
 		nethandler.sendTestPacket();
+	}
+
+	//ran every client loop
+	void CLIENT::inputHandler::tick() {
+		this->nethandler.receivePackets();
 	}
 
 } /* End of namespace CLIENT */

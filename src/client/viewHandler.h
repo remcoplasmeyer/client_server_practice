@@ -1,7 +1,7 @@
 #ifndef CLIENT_viewHandler_h
 #define CLIENT_viewHandler_h
 #include "resourceLoader.h"
-#include "Client.h"
+//#include "Client.h"
 
 namespace CLIENT {
 	class Client;
