@@ -6,6 +6,7 @@
 
 #include <SFML\Network.hpp>
 #include "RakPeerInterface.h"
+#include "RakString.h"
 #include "GetTime.h"
 #include "BitStream.h"
 #include "MessageIdentifiers.h"
@@ -22,8 +23,6 @@ namespace SERVER {
 
 
 Server::Server() {
-	this->settings = SERVER::serverSettings();			//initializes settings of the server
-	
 	setupConnection();
 	initWorld();
 
@@ -45,7 +44,7 @@ Server::Server() {
 }
 
 void Server::initWorld() {
-	currentWorld = World();
+
 }
 
 //setup the connection with RakNet
@@ -76,13 +75,21 @@ void Server::tick() {
 					break;
 				case ID_NEW_INCOMING_CONNECTION:
 					FILE_LOG(logINFO) << "NEW CONNECTION: " << packet->systemAddress.ToString();
-					basePacket base = this->basepacket;
+					
+					basePacket base;
+					base.useTimeStamp = (unsigned char)ID_TIMESTAMP;
+					base.typeId = INIT_CONNECTOR_PACKET;
+					base.timeStamp = RakNet::GetTime();
 					initConnectorPacket p;
 					p.base = base;
-					p.mapJSON = this->currentWorld.mapLoader.mapJSON;
+					//p.mapJSON = this->currentWorld.mapLoader.mapJSON;
+					p.mapJSON = RakNet::RakString(this->currentWorld.mapLoader.mapJSON.c_str());
 					RakNet::BitStream stream;
-					stream.Write(INIT_CONNECTOR_PACKET);
-					stream.Write(p);
+
+					stream.Write(base.useTimeStamp);
+					stream.Write(base.timeStamp);
+					stream.Write((RakNet::MessageID)base.typeId);
+					stream.Write(p.mapJSON);
 					peer->Send(&stream, LOW_PRIORITY, RELIABLE, 1, packet->systemAddress, false, 0);
 					break;
 		}

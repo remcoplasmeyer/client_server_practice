@@ -10,7 +10,7 @@ public:
 	netHandler *nethandler;
 
 	packetReceiver();
-	packetReceiver(netHandler *_nethandler);
+	void setNethandler(netHandler *_nethandler);
 
 	void receive();
 };

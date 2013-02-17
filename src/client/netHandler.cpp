@@ -25,7 +25,7 @@ namespace CLIENT {
 		isConnected	= false;
 		this->test = "tassssdfasdf";
 		
-		packetreceiver = CLIENT::packetReceiver(this);
+		packetreceiver.setNethandler(this);
 		//packetsender = CLIENT::packetSender();
 	}
 

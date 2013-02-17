@@ -8,8 +8,8 @@ class MapLoader {
 
 public:
 	MapLoader();
-	MapLoader(World *_world);
 	void loadMap(std::string mapName);
+	void setWorld(World *_world);
 
 	std::string mapJSON;
 private:

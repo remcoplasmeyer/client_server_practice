@@ -15,12 +15,12 @@
 	[MapLoader] is used to .map files into a world
 */
 
-MapLoader::MapLoader() {
 
+MapLoader::MapLoader() {
+	this->mapBaseDir = "data/maps/";
 }
 
-MapLoader::MapLoader(World *_world) {
-	this->mapBaseDir = "data/maps/";
+void MapLoader::setWorld(World *_world) {
 	this->world = _world;
 }
 

@@ -1,8 +1,12 @@
 <h1>DEVBLOG IN SHORT</h1>
 
-<b>16/02/2013</b>
+<b>16/02/2013 -> 18/02/2013</b>
+* RakNet bitstreams working
+* JSON of the map successfully sent from server to client
 
-* Next time continue at packetReceiver.cpp:20
+TODO NEXT ITERATION
+
+* Draw received map json in window
 
 <b>04/02/2013 -> 06/02/2013</b>
 

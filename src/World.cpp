@@ -4,7 +4,7 @@
 
 
 World::World() {
-	mapLoader = MapLoader(this);
+	mapLoader.setWorld(this);
 	initTestWorld();
 }
 

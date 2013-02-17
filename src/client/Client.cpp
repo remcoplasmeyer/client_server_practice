@@ -23,7 +23,7 @@ Client::Client() {
 	initHandlers();
 
 	FILE_LOG(logINFO) << "Client opened... Opening window";
-	sf::RenderWindow window(sf::VideoMode(settings.windowWidth, this->settings.windowHeight), "Client", sf::Style::Default, sf::ContextSettings(32));
+	//sf::RenderWindow window(sf::VideoMode(settings.windowWidth, this->settings.windowHeight), "Client", sf::Style::Default, sf::ContextSettings(32));
 
 	lastUpdatedTime = RakNet::GetTimeMS();
 
@@ -53,8 +53,8 @@ Client::Client() {
 		//State state = interpolate(previous, current, accumulator/dt);		TODO: INTERPOLATE HERE, ETC
 		this->inputHandler.tick();
 		
-		window.setActive();
-		window.display();		
+/*		window.setActive();
+		window.display();	*/	
 	}
 }
 
