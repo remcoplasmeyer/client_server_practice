@@ -24,6 +24,61 @@ void MapLoader::setWorld(World *_world) {
 	this->world = _world;
 }
 
+void MapLoader::test() {
+	FILE_LOG(logDEBUG) << "testesatsdf";
+}
+
+void MapLoader::JSONtoMap(std::stringstream &localStream) {
+	FILE_LOG(logDEBUG) << "test3";
+	boost::property_tree::ptree pt;
+	FILE_LOG(logDEBUG) << "test4";
+	boost::property_tree::read_json(localStream, pt);
+	FILE_LOG(logDEBUG) << "test5";
+	this->world->mapName = pt.get<std::string>("map.name");
+	FILE_LOG(logDEBUG) << "test6";
+	this->world->mapBackground = pt.get<std::string>("map.background");
+	this->world->mapWidth = pt.get<int>("map.width");
+	this->world->mapHeight = pt.get<int>("map.height");
+
+	std::vector<std::vector<mapTile>> tiles;
+
+	//create vector for every row for the 2d tile array
+	for(int i = 0; i < world->mapWidth;i++) {
+		std::vector<mapTile> tileVector;
+		tiles.push_back(tileVector);
+		for(int j=0; j < world->mapHeight;j++) {
+			mapTile tile(0,0,0,"");
+			tiles.at(i).push_back(tile);
+		}
+	}
+	//get AAAALLL the tiles - and put them in the 2d tiles array
+	BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.tiles")) {
+		assert(v.first.empty());
+		int y = v.second.get<int>("y");
+		int x = v.second.get<int>("x");
+		int type = v.second.get<int>("t");
+		std::string visual = v.second.get<std::string>("i");
+		std::vector<mapTile> *yVec = &tiles[x];
+		yVec->insert(yVec->begin() + y, mapTile(x, y, type, visual));
+	}
+	//get AAAALLL the spawn points 
+	std::list<location> spawnpoints;
+	BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.playerspawns")) {
+		int x = v.second.get<int>("x");
+		int y = v.second.get<int>("y");
+		location loc = {x,y};
+		spawnpoints.push_back(loc);
+	}
+	FILE_LOG(logDEBUG) << "test4";
+	this->mapJSON = localStream.str();
+	FILE_LOG(logDEBUG) << "test5";
+	this->world->mapTiles = tiles;
+	FILE_LOG(logDEBUG) << "test6";
+	this->world->spawnPoints = spawnpoints;
+	FILE_LOG(logDEBUG) << "test7";
+	FILE_LOG(logINFO) << "Done loading map...";
+}
+
 void MapLoader::loadMap(std::string mapName)
 {
 	try {
@@ -31,48 +86,7 @@ void MapLoader::loadMap(std::string mapName)
 		std::string mapLocation = this->mapBaseDir + mapName + ".map";
 		std::ifstream t(mapLocation.c_str());
 		localStream << t.rdbuf();
-
-		boost::property_tree::ptree pt;
-		boost::property_tree::read_json(localStream, pt);
-
-		this->world->mapName = pt.get<std::string>("map.name");
-		this->world->mapBackground = pt.get<std::string>("map.background");
-		this->world->mapWidth = pt.get<int>("map.width");
-		this->world->mapHeight = pt.get<int>("map.height");
-
-		std::vector<std::vector<mapTile>> tiles;
-
-		//create vector for every row for the 2d tile array
-		for(int i = 0; i < world->mapWidth;i++) {
-			std::vector<mapTile> tileVector;
-			tiles.push_back(tileVector);
-			for(int j=0; j < world->mapHeight;j++) {
-				mapTile tile(0,0,0,"");
-				tiles.at(i).push_back(tile);
-			}
-		}
-		//get AAAALLL the tiles - and put them in the 2d tiles array
-		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.tiles")) {
-			assert(v.first.empty());
-			int y = v.second.get<int>("y");
-			int x = v.second.get<int>("x");
-			int type = v.second.get<int>("t");
-			std::string visual = v.second.get<std::string>("i");
-			std::vector<mapTile> *yVec = &tiles[x];
-			yVec->insert(yVec->begin() + y, mapTile(x, y, type, visual));
-		}
-		//get AAAALLL the spawn points 
-		std::list<location> spawnpoints;
-		BOOST_FOREACH(boost::property_tree::ptree::value_type &v, pt.get_child("map.playerspawns")) {
-			int x = v.second.get<int>("x");
-			int y = v.second.get<int>("y");
-			location loc = {x,y};
-			spawnpoints.push_back(loc);
-		}
-
-		this->mapJSON = localStream.str();
-		this->world->mapTiles = tiles;
-		this->world->spawnPoints = spawnpoints;
+		JSONtoMap(localStream);
 	} catch (std::exception const& e) {
 		FILE_LOG(logERROR) << e.what() << std::endl;
 	}

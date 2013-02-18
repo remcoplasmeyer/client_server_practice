@@ -1,11 +1,15 @@
 #include "../Log.h"
 #include "../packetTypes.h"
+#include "gameHandler.h"
 #include "packetReceiver.h"
 #include "netHandler.h"
 #include "RakPeerInterface.h"
 #include "BitStream.h"
 #include "RakNetTypes.h"
 #include "RakString.h"
+#include "Client.h"
+#include "../World.h"
+#include <sstream>
 
 namespace CLIENT {
 
@@ -42,9 +46,12 @@ namespace CLIENT {
 				case INIT_CONNECTOR_PACKET:
 					{
 						FILE_LOG(logINFO) << "received init connector";	
-						RakNet::RakString test;
-						bitstream.Read(test);
-						FILE_LOG(logINFO) << test.C_String();
+						RakNet::RakString receivedMap;
+						bitstream.Read(receivedMap);
+						const char* mapCStr = receivedMap.C_String();
+						std::stringstream s;
+						s << mapCStr;
+						this->nethandler->client->gameHandler.setMapFromStream(s);
 					}
 					break;
 			}

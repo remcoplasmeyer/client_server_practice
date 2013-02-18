@@ -7,13 +7,12 @@
 namespace CLIENT {
 
 
-	CLIENT::viewHandler::viewHandler() { 
+	viewHandler::viewHandler() { 
 		FILE_LOG(logDEBUG) << "view created?!";
 	}
 
-	viewHandler::viewHandler(Client *_client) {
-		this->client = _client;
-		this->resourceLoader = CLIENT::resourceLoader();
+	void viewHandler::tick() {
+
 	}
 
 } /* End of namespace CLIENT */

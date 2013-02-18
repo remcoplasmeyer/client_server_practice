@@ -2,6 +2,7 @@
 #include "Client.h"
 #include "../Log.h"
 #include "inputHandler.h"
+#include "gameHandler.h"
 #include "clientSettings.h"
 #include "GetTime.h"
 #include <SFML/Window.hpp>
@@ -51,7 +52,11 @@ Client::Client() {
 			t += dt;
 		}
 		//State state = interpolate(previous, current, accumulator/dt);		TODO: INTERPOLATE HERE, ETC
+		
+		//tick aaaalll the handlers
 		this->inputHandler.tick();
+		this->gameHandler.tick();
+		this->view.tick();
 		
 /*		window.setActive();
 		window.display();	*/	
@@ -60,16 +65,8 @@ Client::Client() {
 
 
 void Client::initHandlers() {
+	this->inputHandler.setClient(this);
 	inputHandler.nethandler.connect("127.0.0.1", 1234);
-
-	//guiHandler *guiHandler;
-    //gameHandler *gameHandler;
-
-}
-
-void Client::tick()
-{
-
 }
 
 } /* End of namespace CLIENT */

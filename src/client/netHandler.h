@@ -7,16 +7,20 @@
 
 namespace CLIENT {
 
+class Client;
+
 class netHandler {
 
 public:
+	Client *client;
 	bool isConnected;
 	RakNet::RakPeerInterface *peer;
-	std::string test;
 
 	//CLIENT::packetSender packetsender;
 	CLIENT::packetReceiver packetreceiver;
+	void setClient(Client *_client);
 
+	void tick();
 	void connect(char *remoteIPAddress, unsigned short serverPort);
 	void receivePackets();
 	void disconnect();

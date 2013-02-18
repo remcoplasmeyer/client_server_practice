@@ -2,8 +2,9 @@
 #define CLIENT_Client_h
 #include "viewHandler.h"
 #include "inputHandler.h"
+#include "gameHandler.h"
 #include "clientSettings.h"
-#include "netHandler.h"
+#include "RakNetTime.h"
 
 namespace CLIENT {
 
@@ -25,8 +26,7 @@ public:
 
     //guiHandler guiHandler;
 	inputHandler inputHandler;
-	netHandler netHandler;
-    //gameHandler gameHandler;
+    gameHandler gameHandler;
 	viewHandler view;
     CLIENT::clientSettings settings;
 };

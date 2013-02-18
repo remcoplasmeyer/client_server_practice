@@ -11,8 +11,11 @@
 namespace CLIENT {
 
 	CLIENT::inputHandler::inputHandler() {
-		//nethandler = CLIENT::netHandler();
-		controlhandler = CLIENT::controlHandler();
+	}
+
+	void inputHandler::setClient(Client *_client) {
+		this->client = _client;
+		this->nethandler.setClient(_client);
 	}
 
 	void CLIENT::inputHandler::sendTestPacket() {

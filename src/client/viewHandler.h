@@ -15,7 +15,7 @@ public:
 	CLIENT::Client *client;
 
 	viewHandler();
-	viewHandler(Client *_client);
+	void tick();
 	resourceLoader resourceLoader;
 };
 

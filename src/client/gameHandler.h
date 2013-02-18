@@ -1,5 +1,8 @@
 #ifndef CLIENT_gameHandler_h
 #define CLIENT_gameHandler_h
+#include <string>
+#include <sstream>
+#include "../World.h"
 
 class World;
 
@@ -9,11 +12,11 @@ class gameHandler {
 
  public:
 
+    World currentWorld;
 
-    /**
-     * @element-type World
-     */
-    World *currentWorld;
+	gameHandler();
+	void tick();
+	void setMapFromStream(std::stringstream &jsonmap);
 };
 
 } /* End of namespace CLIENT */

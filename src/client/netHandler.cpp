@@ -5,6 +5,7 @@
 #include "RakNetStatistics.h"
 #include "MessageIdentifiers.h"
 
+#include "Client.h"
 #include "netHandler.h"
 #include "packetSender.h"
 #include "packetReceiver.h"
@@ -23,10 +24,13 @@ namespace CLIENT {
 		RakNet::StartupResult b = peer->Startup(1,&socketDescriptor,1);
 		RakAssert(b == RAKNET_STARTED);
 		isConnected	= false;
-		this->test = "tassssdfasdf";
 		
 		packetreceiver.setNethandler(this);
 		//packetsender = CLIENT::packetSender();
+	}
+
+	void netHandler::setClient(Client *_client) {
+		this->client = _client;
 	}
 
 	void CLIENT::netHandler::connect(char *remoteIPAddress, unsigned short serverPort) {
@@ -52,6 +56,10 @@ namespace CLIENT {
 
 	void CLIENT::netHandler::sendTestPacket() {
 		//packetSender.send(somethinglol);
+	}
+
+	void netHandler::tick() {
+		receivePackets();
 	}
 
 } /* End of namespace CLIENT */

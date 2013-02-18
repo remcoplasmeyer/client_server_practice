@@ -1,5 +1,7 @@
 <h1>DEVBLOG IN SHORT</h1>
 
+NEXT TIME: CHECK GAMEHANDLER.CPP
+
 <b>16/02/2013 -> 18/02/2013</b>
 * RakNet bitstreams working
 * JSON of the map successfully sent from server to client

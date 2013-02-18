@@ -24,10 +24,12 @@ class World {
     void tick();
     void restartWorld();
     void setMap(std::string mapName);
+	void JSONtoMap(std::stringstream &jsonmap);
 	void initTestWorld();
 
  public:
-	std::string mapName, mapBackground;
+	std::string mapName;
+	std::string mapBackground;
 	int mapWidth, mapHeight;
 
 	MapLoader mapLoader;
