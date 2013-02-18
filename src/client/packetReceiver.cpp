@@ -49,8 +49,10 @@ namespace CLIENT {
 						RakNet::RakString receivedMap;
 						bitstream.Read(receivedMap);
 						const char* mapCStr = receivedMap.C_String();
+						std::string test(mapCStr);
 						std::stringstream s;
 						s << mapCStr;
+						FILE_LOG(logDEBUG) << test;
 						this->nethandler->client->gameHandler.setMapFromStream(s);
 					}
 					break;

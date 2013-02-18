@@ -12,7 +12,7 @@ World::World() {
 }
 
 void World::initTestWorld() {
-	//setMap("test");
+	setMap("test");
 }
 
 //update the whole world, called every server loop
