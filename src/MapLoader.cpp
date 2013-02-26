@@ -25,17 +25,12 @@ void MapLoader::setWorld(World *_world) {
 }
 
 void MapLoader::test() {
-	FILE_LOG(logDEBUG) << "testesatsdf";
 }
 
 void MapLoader::JSONtoMap(std::stringstream &localStream) {
-	FILE_LOG(logDEBUG) << "test3";
 	boost::property_tree::ptree pt;
-	FILE_LOG(logDEBUG) << "test4";
 	boost::property_tree::read_json(localStream, pt);
-	FILE_LOG(logDEBUG) << "test5";
 	this->world->mapName = pt.get<std::string>("map.name");
-	FILE_LOG(logDEBUG) << "test6";
 	this->world->mapBackground = pt.get<std::string>("map.background");
 	this->world->mapWidth = pt.get<int>("map.width");
 	this->world->mapHeight = pt.get<int>("map.height");
@@ -69,13 +64,9 @@ void MapLoader::JSONtoMap(std::stringstream &localStream) {
 		location loc = {x,y};
 		spawnpoints.push_back(loc);
 	}
-	FILE_LOG(logDEBUG) << "test4";
 	this->mapJSON = localStream.str();
-	FILE_LOG(logDEBUG) << "test5";
 	this->world->mapTiles = tiles;
-	FILE_LOG(logDEBUG) << "test6";
 	this->world->spawnPoints = spawnpoints;
-	FILE_LOG(logDEBUG) << "test7";
 	FILE_LOG(logINFO) << "Done loading map...";
 }
 

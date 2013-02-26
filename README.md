@@ -1,8 +1,15 @@
 <h1>DEVBLOG IN SHORT</h1>
 
-NEXT TIME: CHECK GAMEHANDLER.CPP
+
+<b>26/02/2013</b>
+
+* map being received from the server is now drawn :D
+
+TODO NEXT ITERATION:
+* Get started on game logic
 
 <b>16/02/2013 -> 18/02/2013</b>
+
 * RakNet bitstreams working
 * JSON of the map successfully sent from server to client
 

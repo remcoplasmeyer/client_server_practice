@@ -38,6 +38,8 @@ namespace CLIENT {
 		for each (std::string image in playerTexturesHolder) {
 			loadTextureIntoMap(this->playerTexturesBasePath + image, playerTextures);
 		}
+
+		FILE_LOG(logINFO) << "Loaded Resources...";
 	}
 
 	void resourceLoader::loadTextureIntoMap(std::string imagePath, std::map<std::string, sf::Texture> &texturesMap) {
@@ -55,6 +57,7 @@ namespace CLIENT {
 		return texture;
 	}
 
+	/*TODO: add error handling in get texture functions*/
 	sf::Texture* resourceLoader::getBackground(std::string name) {
 		return getTextureFromMap(backgroundsBasePath + name, &backgrounds);
 	}

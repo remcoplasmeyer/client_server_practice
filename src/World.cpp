@@ -23,12 +23,8 @@ void World::tick()
 //restarts world 
 void World::restartWorld()
 {
-	FILE_LOG(logDEBUG) << "testtttttttt";
-	FILE_LOG(logDEBUG) << this->mapName;
 	this->mapTiles.clear();
-	FILE_LOG(logDEBUG) << "testtttttttt";
 	this->players.clear();
-	FILE_LOG(logDEBUG) << "testtttttttt";
 	this->spawnPoints.clear();
 }
 

@@ -16,16 +16,12 @@ int main() {
 
 namespace CLIENT {
 
-enum CLIENTSTATES {
-	INGAME
-};
-
 Client::Client() {
 	initHandlers();
 
 	FILE_LOG(logINFO) << "Client opened... Opening window";
-	//sf::RenderWindow window(sf::VideoMode(settings.windowWidth, this->settings.windowHeight), "Client", sf::Style::Default, sf::ContextSettings(32));
-
+	
+	this->state = INGAME;			//TODO: MAKE THIS GUI DEPENDENT OR SOMETHING
 	lastUpdatedTime = RakNet::GetTimeMS();
 
     float t = 0.0f;
@@ -52,19 +48,16 @@ Client::Client() {
 			t += dt;
 		}
 		//State state = interpolate(previous, current, accumulator/dt);		TODO: INTERPOLATE HERE, ETC
-		
 		//tick aaaalll the handlers
 		this->inputHandler.tick();
 		this->gameHandler.tick();
 		this->view.tick();
-		
-/*		window.setActive();
-		window.display();	*/	
 	}
 }
 
 
 void Client::initHandlers() {
+	this->view.setClient(this);
 	this->inputHandler.setClient(this);
 	inputHandler.nethandler.connect("127.0.0.1", 1234);
 }

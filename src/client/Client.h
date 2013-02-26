@@ -8,10 +8,16 @@
 
 namespace CLIENT {
 
+enum CLIENTSTATES {
+	INGAME
+};
+
 class Client {
 
 public:
 	int state;
+	
+	sf::RenderWindow window;
 
 	RakNet::TimeMS currentTime;
 	RakNet::TimeMS lastUpdatedTime;
@@ -24,7 +30,6 @@ public:
 
 	//HANDLERS
 
-    //guiHandler guiHandler;
 	inputHandler inputHandler;
     gameHandler gameHandler;
 	viewHandler view;
