@@ -7,7 +7,8 @@
 
 enum packetIdentifiers {
 	CHAT_PACKET = ID_USER_PACKET_ENUM,
-	INIT_CONNECTOR_PACKET = ID_USER_PACKET_ENUM+1
+	INIT_CONNECTOR_PACKET = ID_USER_PACKET_ENUM+1,
+	PLAYERMOVE_PACKET = ID_USER_PACKET_ENUM+2
 };
 
 
@@ -23,7 +24,19 @@ struct basePacket {
 
 struct initConnectorPacket {
 	basePacket base;
-	RakNet::RakString mapJSON;
+	RakNet::RakString mapJSON;				//JSON of the .map
+	unsigned long uniqueid;					//player's unique id
+};
+
+struct playerMovePacket {
+	basePacket base;
+	unsigned long uniqueid;
+	float x;
+	float y;
+	float velx;
+	float vely;
+	int inputDirection;
+	bool inputJump;
 };
 
 #pragma pack(pop)

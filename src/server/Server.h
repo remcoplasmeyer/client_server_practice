@@ -32,8 +32,10 @@ public:
 
 	Server();
 	~Server();
+	void sendGameState();
 	void setupConnection();
 	void tick();
+	void tickWorld();
 	void initWorld();
 	void updateBasePacket();
 

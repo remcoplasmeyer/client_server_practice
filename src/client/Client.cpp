@@ -45,13 +45,15 @@ Client::Client() {
 			accumulator -= dt;
 			//previous = current;			TODO: IMPLEMENT STATES
 			//integrate(current, t, dt);	TODO: integrate here
+			
+			this->inputHandler.tick();	
+			this->gameHandler.tick();
+
 			t += dt;
 		}
 		//State state = interpolate(previous, current, accumulator/dt);		TODO: INTERPOLATE HERE, ETC
-		//tick aaaalll the handlers
-		this->inputHandler.tick();
-		this->gameHandler.tick();
-		this->view.tick();
+		//tick renderer
+		this->view.interpolate(accumulator/dt);		//we render an alpha of the current to the next state, for interpolation
 	}
 }
 

@@ -20,7 +20,8 @@ public:
 	viewHandler();
 	~viewHandler();
 	void setClient(Client* _client);
-	void tick();
+	void interpolate(float alpha);
+	void drawPlayers(float alpha);
 	void drawWorld();
 	void drawIngameGUI();
 

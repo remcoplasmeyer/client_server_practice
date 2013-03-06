@@ -49,11 +49,16 @@ namespace CLIENT {
 						RakNet::RakString receivedMap;
 						bitstream.Read(receivedMap);
 						const char* mapCStr = receivedMap.C_String();
-						std::string test(mapCStr);
 						std::stringstream s;
 						s << mapCStr;
-						FILE_LOG(logDEBUG) << test;
+						unsigned long receivedUniqueid;
+						bitstream.Read(receivedUniqueid);
 						this->nethandler->client->gameHandler.setMapFromStream(s);
+					}
+					break;
+				case PLAYERMOVE_PACKET:
+					{
+							//FILE_LOG(logDEBUG) << "RECEIVED PLAYER MOVE PACKET";
 					}
 					break;
 			}

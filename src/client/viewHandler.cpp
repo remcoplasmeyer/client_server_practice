@@ -24,7 +24,8 @@ namespace CLIENT {
 	}
 
 	/*tick the viewHandler, called every game loop*/
-	void viewHandler::tick() {
+	/*alpha given is the % to the next game state, in relation to the previous*/
+	void viewHandler::interpolate(float alpha = 1.0f) {
 		if(window.isOpen()) {
 			/*POLL EVENTS - KEEP THIS, OR SFML WILL CRASH*/
 			sf::Event event;
@@ -42,6 +43,7 @@ namespace CLIENT {
 				case INGAME:		//client is ingame at the moment
 				{
 					drawWorld();
+					drawPlayers(alpha);
 					drawIngameGUI();
 				}
 				break;
@@ -83,6 +85,9 @@ namespace CLIENT {
 			}
 		}
 		/*DONE DRAWING MAP TILES*/
+	}
+
+	void viewHandler::drawPlayers(float alpha = 1.0f) {
 
 	}
 

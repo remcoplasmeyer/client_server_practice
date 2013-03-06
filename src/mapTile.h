@@ -9,6 +9,9 @@ class mapTile {
     location location;			//struct holding x and y
 	int type;
 	std::string image;
+	bool solid;
+
+	int height, width;
 
 	mapTile();
 	mapTile(int _x, int _y, int _type, std::string _image);

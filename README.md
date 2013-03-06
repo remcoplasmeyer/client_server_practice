@@ -1,5 +1,13 @@
 <h1>DEVBLOG IN SHORT</h1>
 
+<b>06/03/2013</b>
+
+* Player physics
+* Passing player physics from server to client
+
+TODO NEXT ITERATION:
+* Draw players
+* Handle input
 
 <b>26/02/2013</b>
 
