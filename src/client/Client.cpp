@@ -25,7 +25,8 @@ Client::Client() {
 	lastUpdatedTime = RakNet::GetTimeMS();
 
     float t = 0.0f;
-	float dt = 1.f/(1000.f/settings.fps);
+	float dt = 1.0f / settings.fps;
+	FILE_LOG(logDEBUG) << dt;
 
 	RakNet::Time currentTime = RakNet::GetTimeMS();
 	float accumulator = 0.0f;
@@ -34,7 +35,7 @@ Client::Client() {
 	while (true) 
 	{			
 		RakNet::Time newTime = RakNet::GetTimeMS();
-		float deltaTime = newTime - currentTime;
+		float deltaTime = (newTime - currentTime)/1000.f;
 		currentTime = newTime;
 		if (deltaTime > 0.25f)
 			deltaTime = 0.25f;

@@ -16,7 +16,7 @@ worldSettings::worldSettings() {
 	VELTURBOJUMP			= 10.2f;		//velocity for turbo jumping
 	VELSUPERJUMP			= 13.0f;		//super jump (jumping off of orange note blocks)
 	VELPUSHBACK			= 5.0f;
-	GRAVITATION			= 0.30f;
+	GRAVITATION			= 0.90f;
 	TILESIZE = 64;
 	GROUNDFRICTION		= 1.0f;
 	AIRFRICTION			= 0.6f;
