@@ -88,6 +88,45 @@ namespace CLIENT {
 	}
 
 	void viewHandler::drawPlayers(float alpha = 1.0f) {
+		/*LOOP AAAALLL THE PLAYERS*/
+		std::map<unsigned long, Player> &players = this->client->gameHandler.currentWorld.players;
+		std::map<unsigned long, Player>::iterator playerItr;
+		for(playerItr = players.begin(); playerItr != players.end(); playerItr++) {
+			Player &player = playerItr->second;
+			//TODO: STORE CHAR SPRITES SOMEWHERE
+			sf::Sprite playerSprite;
+			int textureX = 0;
+			int textureY = 0;
+			int charSize = 41;			//TODO: store this somewhere
+			switch(player.state) {
+			case STANDING:
+				textureX = 0;
+				break;
+			case RUNNING:
+				/*if(player.textureStep < 7) {*/
+				if(true) {
+					textureX = charSize;
+				} else {
+					textureX = 2*charSize;
+				}
+				break;
+			case INAIR:
+				textureX = 3*charSize;
+				break;
+			}
+			//TODO: DO SOMETHING ABOUT SPRITE FLIPPING
+			int invert = 1;
+			if(!player.goingRight) {
+				invert = -1;
+				textureX = (textureX+charSize);
+			}
+			playerSprite.setOrigin(float(invert),1.f);
+			playerSprite.setTexture(*this->resourceLoader.getPlayerTexture("mario.png"));
+			playerSprite.setTextureRect(sf::IntRect(textureX, textureY, invert*charSize, 64));
+			//playerSprite.setScale(invert,1);						//this was used in the SFML2 snapshot version to flip the sprite, not necessary in the lastest version
+			playerSprite.setPosition(player.currentState.x,player.currentState.y);
+			this->window.draw(playerSprite);
+		}
 
 	}
 

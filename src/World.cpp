@@ -77,3 +77,16 @@ bool World::boundingBoxIntersect(float x1, float y1, float width1, float height1
 
 	return(true);
 }
+
+void World::playerMoveFromServer(unsigned long uniqueid, float x, float y, float velx, float vely, int inputDirection, bool inputJump) {
+	if(!(this->players.find(uniqueid) == this->players.end()) ) {
+		//world has a player with this uniqueid
+		Player *player = &this->players[uniqueid];
+		player->currentState.x = x;
+		player->currentState.y = y;
+		player->velx = velx;
+		player->vely = vely;
+		player->inputDirection = inputDirection;
+		player->inputJump = inputJump;
+	} //else: player not found in world, do nothing
+}

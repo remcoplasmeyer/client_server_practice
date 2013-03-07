@@ -114,12 +114,32 @@ void Server::tick() {
 					p.uniqueid = uniqueid;
 					RakNet::BitStream stream;
 
+					basePacket base2;
+					base2.useTimeStamp = (unsigned char)ID_TIMESTAMP;
+					base2.typeId = NEWPLAYER_PACKET;
+					base2.timeStamp = RakNet::GetTime();
+
+					newPlayerPacket newPlayer;
+					newPlayer.base = base2;
+					newPlayer.name = RakNet::RakString("Anon");
+					newPlayer.uniqueid = uniqueid;
+
 					stream.Write(base.useTimeStamp);
 					stream.Write(base.timeStamp);
 					stream.Write((RakNet::MessageID)base.typeId);
 					stream.Write(p.mapJSON);
 					stream.Write(p.uniqueid);
 					peer->Send(&stream, LOW_PRIORITY, RELIABLE, 1, packet->systemAddress, false, 0);
+	
+					//send new player packet to all other players
+					RakNet::BitStream newPlayerStream;
+					newPlayerStream.Write(base2.useTimeStamp);
+					newPlayerStream.Write(base2.timeStamp);
+					newPlayerStream.Write((RakNet::MessageID)base2.typeId);
+					newPlayerStream.Write(newPlayer.name);
+					newPlayerStream.Write(newPlayer.uniqueid);
+					FILE_LOG(logINFO) << "Broadcasting new player";
+					peer->Send(&newPlayerStream, MEDIUM_PRIORITY, RELIABLE, 1, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, 0);
 					break;
 		}
 		//remove packet, get next one

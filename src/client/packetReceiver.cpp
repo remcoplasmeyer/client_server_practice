@@ -53,12 +53,44 @@ namespace CLIENT {
 						s << mapCStr;
 						unsigned long receivedUniqueid;
 						bitstream.Read(receivedUniqueid);
+						this->nethandler->client->uniqueid = receivedUniqueid;
 						this->nethandler->client->gameHandler.setMapFromStream(s);
+					}
+					break;
+				case NEWPLAYER_PACKET:
+					{
+						FILE_LOG(logINFO) << "NEW PLAYER RECEIVED";
+						unsigned long uniqueid;
+						bitstream.Read(uniqueid);
+						RakNet::RakString name;
+						bitstream.Read(name);
+
+						World *world = &this->nethandler->client->gameHandler.currentWorld;
+						world->addPlayer(uniqueid);
 					}
 					break;
 				case PLAYERMOVE_PACKET:
 					{
-							//FILE_LOG(logDEBUG) << "RECEIVED PLAYER MOVE PACKET";
+						//FILE_LOG(logDEBUG) << "RECEIVED PLAYER MOVE PACKET";
+						basePacket base;
+						unsigned long uniqueid;
+						bitstream.Read(uniqueid);
+						float x;
+						bitstream.Read(x);
+						float y;
+						bitstream.Read(y);
+						float velx;
+						bitstream.Read(velx);
+						float vely;
+						bitstream.Read(vely);
+						int inputDirection;
+						bitstream.Read(inputDirection);
+						bool inputJump;
+						bitstream.Read(inputJump);
+
+						World *world = &this->nethandler->client->gameHandler.currentWorld;
+						world->playerMoveFromServer(uniqueid, x, y, velx, vely, inputDirection, inputJump);
+
 					}
 					break;
 			}

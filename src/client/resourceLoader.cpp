@@ -27,7 +27,7 @@ namespace CLIENT {
 
 		std::string backgroundHolder[] = {"testbg.png"};
 		std::string mapTexturesHolder[] = {"dirt.png", "grass_main.png"};
-		std::string playerTexturesHolder[] = {"mario_template.png"};
+		std::string playerTexturesHolder[] = {"mario.png"};
 
 		for each (std::string image in backgroundHolder) {
 			loadTextureIntoMap(this->backgroundsBasePath + image, backgrounds);

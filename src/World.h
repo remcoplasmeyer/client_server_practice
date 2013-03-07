@@ -47,6 +47,8 @@ class World {
 
 	//childs use this to check for a bounding box intersection
 	bool boundingBoxIntersect(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2);
+
+	void playerMoveFromServer(unsigned long uniqueid, float x, float y, float velx, float vely, int inputDirection, bool inputJump);
 };
 
 #endif // World_h

@@ -16,7 +16,6 @@ class Client {
 
 public:
 	int state;
-	
 	sf::RenderWindow window;
 
 	RakNet::TimeMS currentTime;
@@ -34,6 +33,8 @@ public:
     gameHandler gameHandler;
 	viewHandler view;
     CLIENT::clientSettings settings;
+
+	unsigned long uniqueid;					//player's uniqueid
 };
 
 } /* End of namespace CLIENT */
