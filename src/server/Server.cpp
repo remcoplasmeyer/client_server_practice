@@ -99,6 +99,7 @@ void Server::tick() {
 				case ID_DISCONNECTION_NOTIFICATION:
 					break;
 				case ID_NEW_INCOMING_CONNECTION:
+					{
 					FILE_LOG(logINFO) << "NEW CONNECTION: " << packet->systemAddress.ToString();
 					unsigned long uniqueid = RakNet::RakNetGUID::ToUint32(packet->guid);
 					//add player to world
@@ -136,10 +137,30 @@ void Server::tick() {
 					newPlayerStream.Write(base2.useTimeStamp);
 					newPlayerStream.Write(base2.timeStamp);
 					newPlayerStream.Write((RakNet::MessageID)base2.typeId);
-					newPlayerStream.Write(newPlayer.name);
 					newPlayerStream.Write(newPlayer.uniqueid);
+					newPlayerStream.Write(newPlayer.name);
 					FILE_LOG(logINFO) << "Broadcasting new player";
 					peer->Send(&newPlayerStream, MEDIUM_PRIORITY, RELIABLE, 1, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, 0);
+					}
+					break;
+				case PLAYERMOVE_INPUT_PACKET:
+					{
+					//received a movement packet from ingame client
+					RakNet::BitStream b(packet->data, packet->length, false);
+					basePacket base;
+					b.Read(base.useTimeStamp);
+					b.Read(base.timeStamp);
+					b.Read(base.typeId);
+
+					playerMoveInputPacket p;
+					b.Read(p.inputDirection);
+					b.Read(p.inputJump);
+
+					unsigned long uniqueid = RakNet::RakNetGUID::ToUint32(packet->guid);
+					Player *player = &this->currentWorld.players[uniqueid];
+					player->setInput(p.inputDirection, p.inputJump);
+
+					}
 					break;
 		}
 		//remove packet, get next one

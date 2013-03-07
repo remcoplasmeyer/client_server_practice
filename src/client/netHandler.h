@@ -15,13 +15,16 @@ public:
 	Client *client;
 	bool isConnected;
 	RakNet::RakPeerInterface *peer;
+	RakNet::AddressOrGUID server;			//server currently connected to
 
 	//CLIENT::packetSender packetsender;
 	CLIENT::packetReceiver packetreceiver;
+	CLIENT::packetSender packetsender;
 	void setClient(Client *_client);
 
 	void tick();
 	void connect(char *remoteIPAddress, unsigned short serverPort);
+	void sendClientMovementInput();
 	void receivePackets();
 	void disconnect();
 	netHandler();

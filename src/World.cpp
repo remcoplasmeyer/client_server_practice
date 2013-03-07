@@ -4,6 +4,7 @@
 #include "Player.h"
 #include <string>
 #include <vector>
+#include <map>
 
 
 World::World() {
@@ -29,8 +30,7 @@ void World::tick()
 }
 
 void World::addPlayer(unsigned long uniqueid) {
-	Player player = Player(uniqueid, this);
-	this->players[uniqueid] = player;
+	this->players.insert(std::pair<unsigned long, Player>(uniqueid, Player(uniqueid, this)));
 }
 
 //restarts world 

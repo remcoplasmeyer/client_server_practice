@@ -27,6 +27,7 @@ class Player {
     void checkIntersection();
 	void resetCollisionVars();
 	void checkCollision();
+	void setInput(int _inputDirection, bool _inputJump);
 
 	//char vars
 	float width, height;

@@ -26,7 +26,7 @@ namespace CLIENT {
 		isConnected	= false;
 		
 		packetreceiver.setNethandler(this);
-		//packetsender = CLIENT::packetSender();
+		packetsender.setNethandler(this);
 	}
 
 	void netHandler::setClient(Client *_client) {
@@ -42,6 +42,10 @@ namespace CLIENT {
 			FILE_LOG(logINFO) << "Client wont start connecting?";
 		}
 	}
+
+	void CLIENT::netHandler::sendClientMovementInput() {
+		this->packetsender.sendClientMovementInput();
+	};
 
 	void CLIENT::netHandler::receivePackets() {
 		this->packetreceiver.receive();

@@ -9,7 +9,8 @@ enum packetIdentifiers {
 	CHAT_PACKET = ID_USER_PACKET_ENUM,
 	INIT_CONNECTOR_PACKET = ID_USER_PACKET_ENUM+1,
 	PLAYERMOVE_PACKET = ID_USER_PACKET_ENUM+2,
-	NEWPLAYER_PACKET = ID_USER_PACKET_ENUM+3
+	NEWPLAYER_PACKET = ID_USER_PACKET_ENUM+3,
+	PLAYERMOVE_INPUT_PACKET = ID_USER_PACKET_ENUM+4
 };
 
 
@@ -36,6 +37,7 @@ struct newPlayerPacket {
 	RakNet::RakString name;
 };
 
+//sent by server
 struct playerMovePacket {
 	basePacket base;
 	unsigned long uniqueid;
@@ -43,6 +45,13 @@ struct playerMovePacket {
 	float y;
 	float velx;
 	float vely;
+	int inputDirection;
+	bool inputJump;
+};
+
+//sent by each client
+struct playerMoveInputPacket {
+	basePacket base;
 	int inputDirection;
 	bool inputJump;
 };

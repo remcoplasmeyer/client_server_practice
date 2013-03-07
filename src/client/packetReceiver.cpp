@@ -41,29 +41,30 @@ namespace CLIENT {
 				case ID_CONNECTION_REQUEST_ACCEPTED:
 					{
 						FILE_LOG(logINFO) << "connection accepted";
+						this->nethandler->server = packet->systemAddress;
 					}
 					break;
 				case INIT_CONNECTOR_PACKET:
 					{
-						FILE_LOG(logINFO) << "received init connector";	
 						RakNet::RakString receivedMap;
 						bitstream.Read(receivedMap);
 						const char* mapCStr = receivedMap.C_String();
 						std::stringstream s;
 						s << mapCStr;
-						unsigned long receivedUniqueid;
-						bitstream.Read(receivedUniqueid);
-						this->nethandler->client->uniqueid = receivedUniqueid;
+						unsigned long uniqueid;
+						bitstream.Read(uniqueid);
+						FILE_LOG(logINFO) << "received init connector: " << uniqueid;	
+						this->nethandler->client->uniqueid = uniqueid;
 						this->nethandler->client->gameHandler.setMapFromStream(s);
 					}
 					break;
 				case NEWPLAYER_PACKET:
 					{
-						FILE_LOG(logINFO) << "NEW PLAYER RECEIVED";
 						unsigned long uniqueid;
 						bitstream.Read(uniqueid);
 						RakNet::RakString name;
 						bitstream.Read(name);
+						FILE_LOG(logINFO) << "NEW PLAYER RECEIVED " << uniqueid;
 
 						World *world = &this->nethandler->client->gameHandler.currentWorld;
 						world->addPlayer(uniqueid);
@@ -89,7 +90,7 @@ namespace CLIENT {
 						bitstream.Read(inputJump);
 
 						World *world = &this->nethandler->client->gameHandler.currentWorld;
-						world->playerMoveFromServer(uniqueid, x, y, velx, vely, inputDirection, inputJump);
+						//world->playerMoveFromServer(uniqueid, x, y, velx, vely, inputDirection, inputJump);
 
 					}
 					break;

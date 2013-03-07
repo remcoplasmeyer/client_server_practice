@@ -177,6 +177,11 @@ void Player::checkCollision() {
 	}
 }
 
+void Player::setInput(int _inputDirection, bool _inputJump) {
+	this->inputDirection = _inputDirection;
+	this->inputJump = _inputJump;
+}
+
 void Player::respawn() {
 }
 
